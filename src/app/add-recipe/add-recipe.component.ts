@@ -1,0 +1,88 @@
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
+import { RecipeInterface } from '../interfaces/recipe';
+import { RecipiesService } from '../recipies.service';
+import { Router } from '@angular/router';
+import { Ingredient } from '../interfaces/ingredient';
+
+@Component({
+  selector: 'app-add-recipe',
+  templateUrl: './add-recipe.component.html',
+  styleUrls: ['./add-recipe.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
+})
+export class AddRecipeComponent implements OnInit {
+  newRecipe: RecipeInterface = {
+    name: '',
+    ingredients: [],
+    description: '',
+    tags: [],
+  };
+
+  ingredient: Ingredient = {
+    name: '',
+    amount: null,
+    type: 'g',
+  };
+
+  tag = '';
+
+  readonly unitTypes = ['g', 'dag', 'kg', 'ml', 'l', 'szklanki', 'szt'];
+  constructor(
+    private recipesService: RecipiesService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {}
+
+  addIngredient(): void {
+    //push obiektu, z kontrolkami, które w danej zawierają poszczególne wartości
+    // nie this.ingredient, tylko tak, jak poniżej
+    this.newRecipe.ingredients.push({
+      name: this.ingredient.name,
+      amount: this.ingredient.amount,
+      type: this.ingredient.type,
+    });
+    this.ingredient.name = '';
+    this.ingredient.type = 'g';
+    this.ingredient.amount = null;
+    console.log(this.newRecipe.ingredients);
+  }
+
+  isButtonDisabled(): boolean {
+    return !this.tag.trim();
+  }
+
+  addTag(): void {
+    this.newRecipe.tags.push(this.tag);
+    this.tag = '';
+  }
+
+  create(): void {
+    this.recipesService.create(this.newRecipe).subscribe(() => {
+      this.router.navigate(['/']);
+    });
+    console.log('new recipe', this.newRecipe);
+  }
+
+  removeIngredient(ingredient: Ingredient) {
+    this.newRecipe.ingredients = this.newRecipe.ingredients.filter(
+      (item) => item !== ingredient
+    );
+  }
+
+  removeTag(tag: string) {
+    this.newRecipe.tags = this.newRecipe.tags.filter((item) => item !== tag);
+  }
+
+  onKeyDown(event: KeyboardEvent): void {
+    if (event.key !== 'Backspace' && this.newRecipe.name.length >= 40) {
+      event.preventDefault();
+    }
+  }
+}

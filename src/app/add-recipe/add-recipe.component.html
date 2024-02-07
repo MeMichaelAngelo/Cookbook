@@ -1,0 +1,165 @@
+<div class="book-image">
+  <div class="book-sector">
+    <div class="create-recipe-section-left">
+      <div class="control-size">
+        <tui-input
+          [(ngModel)]="newRecipe.name"
+          tuiTextfieldSize="s"
+          class="input"
+          (keydown)="onKeyDown($event)"
+        >
+          Recipe name
+        </tui-input>
+        <tui-tooltip
+          [showDelay]="200"
+          [hideDelay]="100"
+          content="Nazwa przepisu, który będzie się wyświetlał na liście potraw w głównym menu"
+          direction="right"
+          class="tooltop-info"
+        ></tui-tooltip>
+      </div>
+
+      <div class="control-size">
+        <tui-input
+          [(ngModel)]="ingredient.name"
+          tuiTextfieldSize="s"
+          type="text"
+          class="input"
+          lettersOnly
+        >
+          Ingredient
+        </tui-input>
+      </div>
+
+      <div class="control-size">
+        <div class="flex">
+          <tui-input-number
+            [(ngModel)]="ingredient.amount"
+            tuiTextfieldSize="s"
+            class="small-input"
+            [precision]="2"
+          >
+            Quantity
+          </tui-input-number>
+          <div class="small-space"></div>
+          <!-- Dać walidację na tworzenie przepisu dopiero po dodaniu przynajmniej jednego tagu, a nie dostępny "create" od razu -->
+          <tui-select
+            class="small-input"
+            tuiTextfieldSize="s"
+            [(ngModel)]="ingredient.type"
+          >
+            Unit type
+            <input tuiTextfield />
+            <tui-data-list-wrapper
+              *tuiDataList
+              [items]="unitTypes"
+            ></tui-data-list-wrapper>
+          </tui-select>
+          <div class="small-space"></div>
+          <button
+            [disabled]="
+              !ingredient.name || !ingredient.type || !ingredient.amount
+            "
+            appearance="primary"
+            tuiButton
+            class="tui-space_right-3 tui-space_bottom-3"
+            (click)="addIngredient()"
+          >
+            Add +
+          </button>
+        </div>
+      </div>
+
+      <div class="height-control-size">
+        <tui-textarea [(ngModel)]="newRecipe.description" class="input">
+          Description
+        </tui-textarea>
+      </div>
+
+      <div class="control-size">
+        <tui-input [(ngModel)]="tag" class="input" (keydown.enter)="addTag()">
+          Tags
+        </tui-input>
+        <tui-tooltip
+          [showDelay]="200"
+          [hideDelay]="100"
+          content="Elementy, które zostaną wprowadzone, mogą być wykorzystane do wyszukiwania na głównej stronie."
+          direction="right"
+          class="tooltop-info"
+        ></tui-tooltip>
+      </div>
+
+      <button
+        appearance="primary"
+        tuiButton
+        type="button"
+        class="tui-space_right-3 tui-space_bottom-3"
+        (click)="addTag()"
+        [disabled]="isButtonDisabled()"
+      >
+        Add tag
+      </button>
+
+      <button
+        [disabled]="
+          !newRecipe.name || !newRecipe.ingredients || !newRecipe.description
+        "
+        appearance="primary"
+        tuiButton
+        type="button"
+        class="tui-space_right-3 tui-space_bottom-3"
+        (click)="create()"
+      >
+        Create
+      </button>
+    </div>
+
+    <!-- PRAWA STRONA-->
+    <div class="create-recipe-section-right scrollbar">
+      <div class="recipe-name">
+        {{ newRecipe.name }}
+      </div>
+
+      <div class="ingredients-space">
+        <span>
+          <ul
+            *ngFor="
+              let detailsOfIngredient of newRecipe.ingredients;
+              let i = index
+            "
+          >
+            {{
+              detailsOfIngredient.name
+            }}
+            &nbsp;
+            {{
+              detailsOfIngredient.amount
+            }}
+            {{
+              detailsOfIngredient.type
+            }}
+            <button
+              class="remove-button"
+              (click)="removeIngredient(detailsOfIngredient)"
+            >
+              X
+            </button>
+          </ul>
+        </span>
+      </div>
+
+      <div
+        class="description-space"
+        [innerHTML]="newRecipe.description | newLineAsEnter"
+      ></div>
+
+      <div class="tags-space" *ngIf="newRecipe.tags.length !== 0">
+        Tags:
+        <span class="tags-text" *ngFor="let tag of newRecipe.tags">
+          {{ tag }}
+          <button class="remove-button" (click)="removeTag(tag)">X</button>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

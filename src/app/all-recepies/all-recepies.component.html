@@ -1,0 +1,43 @@
+<button routerLink="/create">Create new recipe</button>
+<div class="book-sector">
+  <div class="create-recipe-section">
+    <div
+      class="position"
+      *ngFor="let recipe of allRecipies"
+      (click)="displayRecipePreview(recipe)"
+    >
+      <tui-island>
+        <h3 class="tui-island__title">Title</h3>
+        <p class="tui-island__paragraph">{{ recipe.name }}</p>
+        <p class="tui-island__paragraph tui-island__paragraph_button">
+          <button
+            tuiButton
+            type="button"
+            appearance="secondary"
+            (click)="displayRecipePreview(recipe)"
+          >
+            Preview
+          </button>
+        </p>
+      </tui-island>
+      <button [routerLink]="['edit', recipe._id]">Edit</button>
+      <button *ngIf="recipe._id" (click)="delete(recipe._id)">Delete</button>
+    </div>
+  </div>
+  <div class="create-recipe-section">
+    hehe
+    <div *ngIf="selectedRecipe">selected!</div>
+    <div class="recipe-name">{{ selectedRecipe?.name }}</div>
+    <div
+      class="ingredients-space"
+      *ngFor="let ingredient of selectedRecipe?.ingredients"
+    >
+      {{ ingredient.name }} &nbsp; {{ ingredient.amount }}
+      {{ ingredient.amount }}
+    </div>
+    <div class="description-space">{{ selectedRecipe?.description }}</div>
+    <div class="tags-space" *ngFor="let tag of selectedRecipe?.tags">
+      {{ selectedRecipe?.tags }}
+    </div>
+  </div>
+</div>
