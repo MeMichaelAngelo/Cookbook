@@ -10,7 +10,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AllRecepiesComponent } from './all-recepies/all-recepies.component';
+import { AllRecipesComponent } from './all-recipes/all-recipes.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AddRecipeComponent } from './add-recipe/add-recipe.component';
 import { FormsModule } from '@angular/forms';
@@ -33,7 +33,7 @@ import { LettersOnly } from './directives/lettersOnly.directive';
 @NgModule({
   declarations: [
     AppComponent,
-    AllRecepiesComponent,
+    AllRecipesComponent,
     AddRecipeComponent,
     EditRecipeComponent,
     newLineAsEnterPipe,

@@ -4,11 +4,11 @@ import { RecipiesService } from '../recipies.service';
 
 @Component({
   selector: 'app-all-recepies',
-  templateUrl: './all-recepies.component.html',
-  styleUrls: ['./all-recepies.component.scss'],
+  templateUrl: './all-recipes.component.html',
+  styleUrls: ['./all-recipes.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class AllRecepiesComponent implements OnInit {
+export class AllRecipesComponent implements OnInit {
   allRecipies: RecipeInterface[] = [];
   selectedRecipe: RecipeInterface | null = null;
 

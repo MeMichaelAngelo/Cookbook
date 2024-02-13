@@ -1,0 +1,98 @@
+@import "@taiga-ui/core/styles/taiga-ui-local.scss";
+
+app-all-recepies {
+  [tuiWrapper][data-appearance="edit"] {
+    background: #ffba51;
+    color: #fff;
+
+    @mixin wrapper-hover {
+      background: #ffbf00;
+    }
+
+    &:hover {
+      @include wrapper-hover;
+    }
+  }
+
+  .book-image {
+    position: absolute;
+    width: 100%;
+    background-image: url("../../assets/opened-book — kopia.png");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+    height: 100vh;
+  }
+
+  .book-sector {
+    display: flex;
+  }
+
+  .create-recipe-section-left {
+    width: 600px;
+    margin: 0 auto;
+    overflow: auto;
+    margin-top: 6%;
+    margin-left: 10%;
+    max-height: 600px;
+  }
+
+  .title-details {
+    text-align: center;
+  }
+
+  .create-recipe-section-right {
+    width: 720px;
+    margin: 0 auto;
+    margin-top: 6%;
+    max-height: 645px;
+    overflow: auto;
+  }
+
+  .separate-buttons {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  tui-island {
+    border: 2px solid brown;
+    background-color: #513a17;
+  }
+
+  .recipe {
+    width: 450px;
+    margin-bottom: 20px;
+  }
+
+  .recipe-name {
+    letter-spacing: 2px;
+    font-size: 24px;
+    padding-bottom: 30px;
+    text-align: center;
+  }
+
+  .ingredients-space {
+    padding-top: 18px;
+  }
+
+  .description-space {
+    font-family: "Courgette-Regular";
+    font-size: 16px;
+    word-wrap: break-word;
+  }
+
+  .tags-space {
+    padding-top: 10px;
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    width: 12px;
+    background-color: #fcf1c9;
+    border-radius: 10px;
+  }
+  .scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #d62929;
+  }
+}
