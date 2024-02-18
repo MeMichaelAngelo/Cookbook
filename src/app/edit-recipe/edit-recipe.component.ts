@@ -5,7 +5,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RecipiesService } from '../recipies.service';
+import { RecipesService } from '../recipes.service';
 import { RecipeInterface } from '../interfaces/recipe';
 import { Ingredient } from '../interfaces/ingredient';
 
@@ -31,7 +31,7 @@ export class EditRecipeComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private recipiesService: RecipiesService
+    private recipesService: RecipesService
   ) {}
 
   ngOnInit(): void {
@@ -46,7 +46,7 @@ export class EditRecipeComponent implements OnInit {
   };
 
   getRecipe() {
-    this.recipiesService.fetchRecipeById(this.itemId).subscribe((data) => {
+    this.recipesService.fetchRecipeById(this.itemId).subscribe((data) => {
       this.recipe = data;
     });
   }
@@ -89,7 +89,7 @@ export class EditRecipeComponent implements OnInit {
   }
 
   update() {
-    this.recipiesService.update(this.itemId, this.recipe).subscribe(() => {
+    this.recipesService.update(this.itemId, this.recipe).subscribe(() => {
       this.router.navigate(['/']).then();
     });
   }

@@ -1,40 +1,51 @@
-<button routerLink="/create">Create new recipe</button>
 <div class="book-image">
   <div class="book-sector">
-    <div class="create-recipe-section-left scrollbar">
-      <div class="recipe" *ngFor="let recipe of allRecipies">
-        <tui-island>
-          <h3 class="tui-island__title title-details">{{ recipe.name }}</h3>
-          <div class="tui-island__paragraph tui-island__paragraph_button">
-            <div class="separate-buttons">
-              <button
-                tuiButton
-                type="button"
-                appearance="secondary"
-                (click)="displayRecipePreview(recipe)"
-              >
-                Preview
-              </button>
-              <button
-                tuiButton
-                type="button"
-                appearance="edit"
-                [routerLink]="['edit', recipe._id]"
-              >
-                Edit
-              </button>
-              <button
-                *ngIf="recipe._id"
-                tuiButton
-                type="button"
-                appearance="secondary-destructive"
-                (click)="delete(recipe._id)"
-              >
-                Delete
-              </button>
+    <div class="create-recipe-section-left">
+      <div class="new-recipe-button">
+        <button
+          tuiButton
+          type="button"
+          appearance="newRecipe"
+          routerLink="/create"
+        >
+          + Add recipe
+        </button>
+      </div>
+      <div class="recipe-list-sector scrollbar">
+        <div class="list-of-recipes" *ngFor="let recipe of allRecipes">
+          <tui-island>
+            <h3 class="tui-island__title title-details">{{ recipe.name }}</h3>
+            <div class="tui-island__paragraph tui-island__paragraph_button">
+              <div class="separate-buttons">
+                <button
+                  tuiButton
+                  type="button"
+                  appearance="secondary"
+                  (click)="displayRecipePreview(recipe)"
+                >
+                  Preview
+                </button>
+                <button
+                  tuiButton
+                  type="button"
+                  appearance="edit"
+                  [routerLink]="['edit', recipe._id]"
+                >
+                  Edit
+                </button>
+                <button
+                  *ngIf="recipe._id"
+                  tuiButton
+                  type="button"
+                  appearance="secondary-destructive"
+                  (click)="deleteRecipe(recipe._id)"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-          </div>
-        </tui-island>
+          </tui-island>
+        </div>
       </div>
     </div>
 

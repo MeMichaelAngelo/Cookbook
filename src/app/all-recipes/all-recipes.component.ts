@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { RecipeInterface } from '../interfaces/recipe';
-import { RecipiesService } from '../recipies.service';
+import { RecipesService } from '../recipes.service';
 
 @Component({
   selector: 'app-all-recepies',
@@ -9,31 +9,31 @@ import { RecipiesService } from '../recipies.service';
   encapsulation: ViewEncapsulation.None,
 })
 export class AllRecipesComponent implements OnInit {
-  allRecipies: RecipeInterface[] = [];
+  allRecipes: RecipeInterface[] = [];
   selectedRecipe: RecipeInterface | null = null;
 
-  constructor(private recipiesService: RecipiesService) {}
+  constructor(private recipesService: RecipesService) {}
 
   ngOnInit(): void {
-    this.getAllRecipies();
+    this.getAllRecipes();
   }
 
-  getAllRecipies() {
-    return this.recipiesService.get().subscribe((data) => {
-      this.allRecipies = data;
+  getAllRecipes() {
+    return this.recipesService.get().subscribe((data) => {
+      this.allRecipes = data;
     });
   }
 
   displayRecipePreview(recipe: RecipeInterface) {
-    this.recipiesService.fetchRecipeById(recipe._id).subscribe((el) => {
+    this.recipesService.fetchRecipeById(recipe._id).subscribe((el) => {
       console.log(el);
       this.selectedRecipe = el;
     });
   }
 
-  delete(id: string) {
-    this.recipiesService.delete(id).subscribe(() => {
-      this.allRecipies = this.allRecipies.filter((recipe) => recipe._id !== id);
+  deleteRecipe(id: string) {
+    this.recipesService.delete(id).subscribe(() => {
+      this.allRecipes = this.allRecipes.filter((recipe) => recipe._id !== id);
     });
   }
 }

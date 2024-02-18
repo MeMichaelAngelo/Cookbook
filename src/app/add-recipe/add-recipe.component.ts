@@ -5,7 +5,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { RecipeInterface } from '../interfaces/recipe';
-import { RecipiesService } from '../recipies.service';
+import { RecipesService } from '../recipes.service';
 import { Router } from '@angular/router';
 import { Ingredient } from '../interfaces/ingredient';
 
@@ -33,10 +33,7 @@ export class AddRecipeComponent implements OnInit {
   tag = '';
 
   readonly unitTypes = ['g', 'dag', 'kg', 'ml', 'l', 'szklanki', 'szt'];
-  constructor(
-    private recipesService: RecipiesService,
-    private router: Router
-  ) {}
+  constructor(private recipesService: RecipesService, private router: Router) {}
 
   ngOnInit(): void {}
 

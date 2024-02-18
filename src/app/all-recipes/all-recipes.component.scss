@@ -1,23 +1,28 @@
 @import "@taiga-ui/core/styles/taiga-ui-local.scss";
 
-app-all-recepies {
-  [tuiWrapper][data-appearance="edit"] {
-    background: #ffba51;
-    color: #fff;
+[tuiWrapper][data-appearance="edit"] {
+  background: #ffba51;
+  color: #fff;
 
-    @mixin wrapper-hover {
-      background: #ffbf00;
-    }
-
-    &:hover {
-      @include wrapper-hover;
-    }
+  @mixin wrapper-hover {
+    background: #ffbf00;
   }
 
+  &:hover {
+    @include wrapper-hover;
+  }
+}
+
+[tuiWrapper][data-appearance="newRecipe"] {
+  background: #1fcf69;
+  color: #fff;
+}
+
+app-all-recepies {
   .book-image {
     position: absolute;
     width: 100%;
-    background-image: url("../../assets/opened-book — kopia.png");
+    background-image: url("../../assets/opened-book.png");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center center;
@@ -28,13 +33,24 @@ app-all-recepies {
     display: flex;
   }
 
+  .recipe-list-sector {
+    max-height: 550px;
+    margin: 0 auto;
+    overflow: auto;
+  }
+
+  .new-recipe-button {
+    margin-left: 23%;
+    margin-bottom: 30px;
+  }
+
   .create-recipe-section-left {
     width: 600px;
     margin: 0 auto;
     overflow: auto;
     margin-top: 6%;
     margin-left: 10%;
-    max-height: 600px;
+    //max-height: 600px;
   }
 
   .title-details {
@@ -59,7 +75,7 @@ app-all-recepies {
     background-color: #513a17;
   }
 
-  .recipe {
+  .list-of-recipes {
     width: 450px;
     margin-bottom: 20px;
   }
