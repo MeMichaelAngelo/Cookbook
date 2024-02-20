@@ -7,7 +7,7 @@ export class LettersOnly {
   constructor() {}
 
   @HostListener('keydown', ['$event']) onKeyDown(event: KeyboardEvent) {
-    const allowedCharacters = /[a-zA-Z ]/;
+    const allowedCharacters = /[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ ]/;
     if (
       !allowedCharacters.test(event.key) &&
       event.key !== 'Backspace' &&
