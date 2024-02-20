@@ -7,13 +7,13 @@ app-add-recipe {
   .book-image {
     position: absolute;
     width: 100%;
-    //height: 800px;
-    background-image: url("../../assets/opened-book — kopia.png");
+    background-image: url("../../assets/opened-book.png");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center center;
-    height: 100vh; /* 100% wysokości widoku */
+    height: 100vh;
   }
+
   .book-sector {
     display: flex;
   }
@@ -30,7 +30,11 @@ app-add-recipe {
     width: 720px;
     margin: 0 auto;
     margin-top: 6%;
-    max-height: 645px;
+    overflow: auto;
+  }
+
+  .ingredients-and-description-space {
+    max-height: 550px;
     overflow: auto;
   }
 
@@ -43,12 +47,7 @@ app-add-recipe {
     margin-bottom: 20px;
   }
 
-  .centerrr {
-    display: flex;
-    justify-content: center;
-  }
-
-  .flex {
+  .flex-inputs-sector {
     display: flex;
   }
 
@@ -58,7 +57,7 @@ app-add-recipe {
   }
 
   .small-input {
-    width: 140px !important;
+    width: 140px;
   }
 
   .small-space {
@@ -86,6 +85,8 @@ app-add-recipe {
 
   .ingredients-space {
     padding-top: 18px;
+    margin: 0 auto;
+    max-width: 80%;
     font-family: "Courgette-Regular";
     font-size: 16px;
     padding-bottom: 30px;
@@ -96,19 +97,20 @@ app-add-recipe {
     margin: 0 auto;
     font-size: 16px;
     word-wrap: break-word;
-    //max-height: 400px;
     max-width: 80%;
     overflow: auto;
   }
 
   .tags-space {
     padding-top: 10px;
-  }
+    margin: 0 auto;
+    max-width: 85%;
 
-  .tags-text {
-    font-family: "Courgette-Regular";
-    font-weight: bold;
-    font-size: 16px;
+    .tags-text {
+      font-family: "Courgette-Regular";
+      font-weight: bold;
+      font-size: 16px;
+    }
   }
 
   .remove-button {
