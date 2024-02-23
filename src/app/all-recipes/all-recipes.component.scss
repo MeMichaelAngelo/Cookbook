@@ -39,9 +39,18 @@ app-all-recepies {
     overflow: auto;
   }
 
-  .new-recipe-button {
-    margin-left: 23%;
-    margin-bottom: 30px;
+  .search-and-add-recipe {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 20px;
+    margin-right: 32px;
+    tui-input {
+      width: 300px;
+    }
+  }
+
+  .add-recipe-button {
+    margin-left: 20px;
   }
 
   .create-recipe-section-left {

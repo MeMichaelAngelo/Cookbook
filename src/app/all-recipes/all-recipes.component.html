@@ -1,8 +1,18 @@
 <div class="book-image">
   <div class="book-sector">
     <div class="create-recipe-section-left">
-      <div class="new-recipe-button">
+      <div class="search-and-add-recipe">
+        <tui-input>
+          Enter recipe name or recipe's tag...
+          <input
+            class="search-input"
+            (ngModelChange)="onSearchTextChange($event)"
+            [(ngModel)]="searchText"
+            tuiTextfield
+          />
+        </tui-input>
         <button
+          class="add-recipe-button"
           tuiButton
           type="button"
           appearance="newRecipe"
@@ -12,7 +22,7 @@
         </button>
       </div>
       <div class="recipe-list-sector scrollbar">
-        <div class="list-of-recipes" *ngFor="let recipe of allRecipes">
+        <div class="list-of-recipes" *ngFor="let recipe of searchField">
           <tui-island>
             <h3 class="tui-island__title title-details">{{ recipe.name }}</h3>
             <div class="tui-island__paragraph tui-island__paragraph_button">
@@ -61,7 +71,7 @@
         </div>
         <div class="description-space">{{ selectedRecipe.description }}</div>
         <div class="tags-space" *ngFor="let tag of selectedRecipe?.tags">
-          {{ selectedRecipe.tags }}
+          {{ tag }}
         </div>
       </div>
     </div>
