@@ -7,6 +7,7 @@
           tuiTextfieldSize="s"
           class="input"
           (keydown)="onKeyDown($event)"
+          (paste)="(false)"
         >
           Recipe name
         </tui-input>
@@ -32,7 +33,7 @@
       </div>
 
       <div class="control-size">
-        <div class="flex">
+        <div class="flex-inputs-sector">
           <tui-input-number
             [(ngModel)]="ingredient.amount"
             tuiTextfieldSize="s"
@@ -42,7 +43,6 @@
             Quantity
           </tui-input-number>
           <div class="small-space"></div>
-          <!-- Dać walidację na tworzenie przepisu dopiero po dodaniu przynajmniej jednego tagu, a nie dostępny "create" od razu -->
           <tui-select
             class="small-input"
             tuiTextfieldSize="s"
@@ -114,51 +114,51 @@
       </button>
     </div>
 
-    <!-- PRAWA STRONA-->
-    <div class="create-recipe-section-right scrollbar">
+    <div class="create-recipe-section-right">
       <div class="recipe-name">
         {{ newRecipe.name }}
       </div>
-
-      <div class="ingredients-space">
-        <span>
-          <ul
-            *ngFor="
-              let detailsOfIngredient of newRecipe.ingredients;
-              let i = index
-            "
-          >
-            {{
-              detailsOfIngredient.name
-            }}
-            &nbsp;
-            {{
-              detailsOfIngredient.amount
-            }}
-            {{
-              detailsOfIngredient.type
-            }}
-            <button
-              class="remove-button"
-              (click)="removeIngredient(detailsOfIngredient)"
+      <div class="ingredients-and-description-space scrollbar">
+        <div class="ingredients-space">
+          <span>
+            <ul
+              *ngFor="
+                let detailsOfIngredient of newRecipe.ingredients;
+                let i = index
+              "
             >
-              X
-            </button>
-          </ul>
-        </span>
-      </div>
+              {{
+                detailsOfIngredient.name
+              }}
+              &nbsp;
+              {{
+                detailsOfIngredient.amount
+              }}
+              {{
+                detailsOfIngredient.type
+              }}
+              <button
+                class="remove-button"
+                (click)="removeIngredient(detailsOfIngredient)"
+              >
+                X
+              </button>
+            </ul>
+          </span>
+        </div>
 
-      <div
-        class="description-space"
-        [innerHTML]="newRecipe.description | newLineAsEnter"
-      ></div>
+        <div
+          class="description-space"
+          [innerHTML]="newRecipe.description | newLineAsEnter"
+        ></div>
 
-      <div class="tags-space" *ngIf="newRecipe.tags.length !== 0">
-        Tags:
-        <span class="tags-text" *ngFor="let tag of newRecipe.tags">
-          {{ tag }}
-          <button class="remove-button" (click)="removeTag(tag)">X</button>
-        </span>
+        <div class="tags-space" *ngIf="newRecipe.tags.length !== 0">
+          Tags:
+          <span class="tags-text" *ngFor="let tag of newRecipe.tags">
+            {{ tag }}
+            <button class="remove-button" (click)="removeTag(tag)">X</button>
+          </span>
+        </div>
       </div>
     </div>
   </div>

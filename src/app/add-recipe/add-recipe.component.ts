@@ -38,8 +38,6 @@ export class AddRecipeComponent implements OnInit {
   ngOnInit(): void {}
 
   addIngredient(): void {
-    //push obiektu, z kontrolkami, które w danej zawierają poszczególne wartości
-    // nie this.ingredient, tylko tak, jak poniżej
     this.newRecipe.ingredients.push({
       name: this.ingredient.name,
       amount: this.ingredient.amount,
@@ -48,7 +46,6 @@ export class AddRecipeComponent implements OnInit {
     this.ingredient.name = '';
     this.ingredient.type = 'g';
     this.ingredient.amount = null;
-    console.log(this.newRecipe.ingredients);
   }
 
   isButtonDisabled(): boolean {
@@ -64,7 +61,6 @@ export class AddRecipeComponent implements OnInit {
     this.recipesService.create(this.newRecipe).subscribe(() => {
       this.router.navigate(['/']);
     });
-    console.log('new recipe', this.newRecipe);
   }
 
   removeIngredient(ingredient: Ingredient) {
