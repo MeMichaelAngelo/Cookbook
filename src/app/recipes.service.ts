@@ -5,7 +5,7 @@ import { RecipeInterface } from './interfaces/recipe';
 @Injectable({
   providedIn: 'root',
 })
-export class RecipiesService {
+export class RecipesService {
   constructor(private http: HttpClient) {}
 
   get() {
