@@ -43,6 +43,7 @@ export class AllRecipesComponent implements OnInit {
   deleteRecipe(id: string) {
     this.recipesService.delete(id).subscribe(() => {
       this.allRecipes = this.allRecipes.filter((recipe) => recipe._id !== id);
+      this.searchTagOrRecipeName();
     });
   }
 
