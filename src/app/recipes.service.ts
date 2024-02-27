@@ -8,7 +8,7 @@ import { RecipeInterface } from './interfaces/recipe';
 export class RecipesService {
   constructor(private http: HttpClient) {}
 
-  get() {
+  getAllRecipes() {
     return this.http.get<RecipeInterface[]>('http://localhost:3000/recipe');
   }
 
