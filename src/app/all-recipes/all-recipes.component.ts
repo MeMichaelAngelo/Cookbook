@@ -28,15 +28,15 @@ export class AllRecipesComponent implements OnInit {
   }
 
   getAllRecipes() {
-    return this.recipesService.get().subscribe((data) => {
+    return this.recipesService.getAllRecipes().subscribe((data) => {
       this.allRecipes = data;
       this.searchField = this.allRecipes;
     });
   }
 
   displayRecipePreview(recipe: RecipeInterface) {
-    this.recipesService.fetchRecipeById(recipe._id).subscribe((el) => {
-      this.selectedRecipe = el;
+    this.recipesService.fetchRecipeById(recipe._id).subscribe((recipe) => {
+      this.selectedRecipe = recipe;
     });
   }
 
