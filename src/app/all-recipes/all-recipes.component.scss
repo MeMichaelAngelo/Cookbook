@@ -1,11 +1,24 @@
 @import "@taiga-ui/core/styles/taiga-ui-local.scss";
 
-[tuiWrapper][data-appearance="edit"] {
-  background: #ffba51;
-  color: #fff;
+[tuiWrapper][data-appearance="preview"] {
+  background: #ffffff5c;
+  color: #939393;
 
   @mixin wrapper-hover {
-    background: #ffbf00;
+    background: #eeececa4;
+  }
+
+  &:hover {
+    @include wrapper-hover;
+  }
+}
+
+[tuiWrapper][data-appearance="edit"] {
+  background: #f69c161f;
+  color: #e88c1c;
+
+  @mixin wrapper-hover {
+    background: #ffbf0052;
   }
 
   &:hover {
@@ -78,13 +91,15 @@ app-all-recepies {
     justify-content: space-around;
   }
 
-  tui-island {
+  .tui-island {
     border: 2px solid brown;
-    background-color: #513a17;
+    background-color: initial;
   }
 
   .list-of-recipes {
-    width: 450px;
+    background-image: url("../../assets/cutting-board.jpg");
+    border-radius: 20px;
+    width: 500px;
     margin-bottom: 20px;
   }
 
