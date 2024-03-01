@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   OnInit,
   ViewEncapsulation,
@@ -16,7 +17,7 @@ import { Ingredient } from '../interfaces/ingredient';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class AddRecipeComponent implements OnInit {
+export class AddRecipeComponent {
   newRecipe: RecipeInterface = {
     name: '',
     ingredients: [],
@@ -33,16 +34,20 @@ export class AddRecipeComponent implements OnInit {
   tag = '';
 
   readonly unitTypes = ['g', 'dag', 'kg', 'ml', 'l', 'szklanki', 'szt'];
-  constructor(private recipesService: RecipesService, private router: Router) {}
-
-  ngOnInit(): void {}
+  constructor(
+    private recipesService: RecipesService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   addIngredient(): void {
-    this.newRecipe.ingredients.push({
+    const newIngredient = {
       name: this.ingredient.name,
       amount: this.ingredient.amount,
       type: this.ingredient.type,
-    });
+    };
+    this.newRecipe.ingredients.push(newIngredient);
+    this.newRecipe = { ...this.newRecipe };
     this.ingredient.name = '';
     this.ingredient.type = 'g';
     this.ingredient.amount = null;
@@ -52,9 +57,20 @@ export class AddRecipeComponent implements OnInit {
     return !this.tag.trim();
   }
 
+  refreshTextForChild() {
+    return (this.newRecipe = { ...this.newRecipe });
+  }
+
   addTag(): void {
     this.newRecipe.tags.push(this.tag);
+    this.newRecipe = { ...this.newRecipe };
     this.tag = '';
+  }
+
+  addTagByEnter(): void {
+    if (this.tag.trim() !== '') {
+      this.addTag();
+    }
   }
 
   create(): void {
@@ -73,7 +89,7 @@ export class AddRecipeComponent implements OnInit {
     this.newRecipe.tags = this.newRecipe.tags.filter((item) => item !== tag);
   }
 
-  onKeyDown(event: KeyboardEvent): void {
+  handlingOfRecipeTitle(event: KeyboardEvent): void {
     if (event.key !== 'Backspace' && this.newRecipe.name.length >= 40) {
       event.preventDefault();
     }

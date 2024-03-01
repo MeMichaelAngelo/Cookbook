@@ -6,7 +6,8 @@
           [(ngModel)]="newRecipe.name"
           tuiTextfieldSize="s"
           class="input"
-          (keydown)="onKeyDown($event)"
+          (keydown)="handlingOfRecipeTitle($event)"
+          (ngModelChange)="refreshTextForChild()"
           (paste)="(false)"
         >
           Recipe name
@@ -71,13 +72,21 @@
       </div>
 
       <div class="height-control-size">
-        <tui-textarea [(ngModel)]="newRecipe.description" class="input">
+        <tui-textarea
+          [(ngModel)]="newRecipe.description"
+          (ngModelChange)="refreshTextForChild()"
+          class="input"
+        >
           Description
         </tui-textarea>
       </div>
 
       <div class="control-size">
-        <tui-input [(ngModel)]="tag" class="input" (keydown.enter)="addTag()">
+        <tui-input
+          [(ngModel)]="tag"
+          class="input"
+          (keydown.enter)="addTagByEnter()"
+        >
           Tags
         </tui-input>
         <tui-tooltip
@@ -114,52 +123,11 @@
       </button>
     </div>
 
-    <div class="create-recipe-section-right">
-      <div class="recipe-name">
-        {{ newRecipe.name }}
-      </div>
-      <div class="ingredients-and-description-space scrollbar">
-        <div class="ingredients-space">
-          <span>
-            <ul
-              *ngFor="
-                let detailsOfIngredient of newRecipe.ingredients;
-                let i = index
-              "
-            >
-              {{
-                detailsOfIngredient.name
-              }}
-              &nbsp;
-              {{
-                detailsOfIngredient.amount
-              }}
-              {{
-                detailsOfIngredient.type
-              }}
-              <button
-                class="remove-button"
-                (click)="removeIngredient(detailsOfIngredient)"
-              >
-                X
-              </button>
-            </ul>
-          </span>
-        </div>
-
-        <div
-          class="description-space"
-          [innerHTML]="newRecipe.description | newLineAsEnter"
-        ></div>
-
-        <div class="tags-space" *ngIf="newRecipe.tags.length !== 0">
-          Tags:
-          <span class="tags-text" *ngFor="let tag of newRecipe.tags">
-            {{ tag }}
-            <button class="remove-button" (click)="removeTag(tag)">X</button>
-          </span>
-        </div>
-      </div>
+    <div class="create-recipe-section-right scrollbar">
+      <app-recipe-preview
+        [choosedRecipe]="newRecipe"
+        [isPreviewMode]="false"
+      ></app-recipe-preview>
     </div>
   </div>
 </div>

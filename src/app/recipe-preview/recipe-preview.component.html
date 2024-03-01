@@ -1,0 +1,40 @@
+<div *ngIf="choosedRecipe">
+  <div class="recipe-name">{{ choosedRecipe.name }}</div>
+  <div class="ingredients-space">
+    <div class="headline" *ngIf="choosedRecipe.ingredients.length">
+      Ingredients
+    </div>
+    <div
+      class="headline-break"
+      *ngFor="let ingredient of choosedRecipe?.ingredients"
+    >
+      {{ ingredient.name }} &nbsp; {{ ingredient.amount }}
+      {{ ingredient.type }}
+      <span *ngIf="!isPreviewMode">
+        <button class="remove-button" (click)="removeIngredient(ingredient)">
+          X
+        </button>
+      </span>
+    </div>
+  </div>
+  <div class="description-space">
+    <div class="headline" *ngIf="choosedRecipe.description">Description</div>
+    <div
+      class="headline-break"
+      [innerHTML]="choosedRecipe.description | newLineAsEnter"
+    >
+      {{ choosedRecipe.description }}
+    </div>
+  </div>
+  <div class="tags-space">
+    <div class="headline" *ngIf="choosedRecipe.tags.length">Tags</div>
+    <div class="headline-break">
+      <ng-container *ngFor="let tag of choosedRecipe?.tags; let isLast = last">
+        {{ tag }}{{ !isLast && isPreviewMode ? "," : "" }}
+        <span *ngIf="!isPreviewMode">
+          <button class="remove-button" (click)="removeTag(tag)">X</button>
+        </span>
+      </ng-container>
+    </div>
+  </div>
+</div>

@@ -67,34 +67,6 @@ app-edit-recipe {
     }
   }
 
-  .recipe-name {
-    font-family: "Courgette-Regular";
-    font-size: 24px;
-    padding-bottom: 30px;
-    text-align: center;
-    margin: 0 auto;
-    overflow: auto;
-    word-wrap: break-word;
-    max-height: 60px;
-    max-width: 80%;
-  }
-
-  .ingredients-space {
-    padding-top: 18px;
-    font-family: "Courgette-Regular";
-    font-size: 16px;
-    padding-bottom: 30px;
-  }
-
-  .description-space {
-    font-family: "Courgette-Regular";
-    margin: 0 auto;
-    font-size: 16px;
-    word-wrap: break-word;
-    max-width: 80%;
-    overflow: auto;
-  }
-
   .tags-space {
     padding-top: 10px;
   }
@@ -103,14 +75,6 @@ app-edit-recipe {
     font-family: "Courgette-Regular";
     font-weight: bold;
     font-size: 16px;
-  }
-
-  .remove-button {
-    background: red;
-    color: white;
-    border-radius: 4px;
-    padding: 10;
-    cursor: pointer;
   }
 
   .scrollbar::-webkit-scrollbar {

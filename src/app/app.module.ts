@@ -29,6 +29,7 @@ import {
 
 import { newLineAsEnterPipe } from './directives/newLineAsEnter.pipe';
 import { LettersOnly } from './directives/lettersOnly.directive';
+import { RecipePreviewComponent } from './recipe-preview/recipe-preview.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { LettersOnly } from './directives/lettersOnly.directive';
     EditRecipeComponent,
     newLineAsEnterPipe,
     LettersOnly,
+    RecipePreviewComponent,
   ],
   imports: [
     BrowserModule,

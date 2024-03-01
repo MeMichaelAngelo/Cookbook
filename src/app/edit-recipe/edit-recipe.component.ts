@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   OnInit,
   ViewEncapsulation,
@@ -31,7 +32,8 @@ export class EditRecipeComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private recipesService: RecipesService
+    private recipesService: RecipesService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -48,19 +50,31 @@ export class EditRecipeComponent implements OnInit {
   getRecipe() {
     this.recipesService.fetchRecipeById(this.itemId).subscribe((data) => {
       this.recipe = data;
+      this.cdr.detectChanges();
     });
   }
 
   addIngredient(): void {
-    this.recipe.ingredients.push({
+    const newIngredient = {
       name: this.ingredient.name,
       amount: this.ingredient.amount,
       type: this.ingredient.type,
-    });
+    };
+    this.recipe.ingredients.push(newIngredient);
+    this.recipe = { ...this.recipe };
     this.ingredient.name = '';
     this.ingredient.type = 'g';
     this.ingredient.amount = null;
-    console.log(this.recipe.ingredients);
+  }
+
+  addTagByEnter(): void {
+    if (this.tag.trim() !== '') {
+      this.addTag();
+    }
+  }
+
+  refreshTextForChild() {
+    return (this.recipe = { ...this.recipe });
   }
 
   removeIngredient(ingredient: Ingredient) {
@@ -79,10 +93,11 @@ export class EditRecipeComponent implements OnInit {
 
   addTag(): void {
     this.recipe.tags.push(this.tag);
+    this.recipe = { ...this.recipe };
     this.tag = '';
   }
 
-  onKeyDown(event: KeyboardEvent): void {
+  handlingOfRecipeTitle(event: KeyboardEvent): void {
     if (event.key !== 'Backspace' && this.recipe.name.length >= 40) {
       event.preventDefault();
     }
