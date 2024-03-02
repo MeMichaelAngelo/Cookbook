@@ -28,7 +28,6 @@ import {
 } from '@taiga-ui/kit';
 
 import { newLineAsEnterPipe } from './directives/newLineAsEnter.pipe';
-import { LettersOnly } from './directives/lettersOnly.directive';
 
 @NgModule({
   declarations: [
@@ -37,7 +36,6 @@ import { LettersOnly } from './directives/lettersOnly.directive';
     AddRecipeComponent,
     EditRecipeComponent,
     newLineAsEnterPipe,
-    LettersOnly,
   ],
   imports: [
     BrowserModule,
