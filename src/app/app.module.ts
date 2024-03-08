@@ -28,8 +28,8 @@ import {
 } from '@taiga-ui/kit';
 
 import { newLineAsEnterPipe } from './directives/newLineAsEnter.pipe';
-import { LettersOnly } from './directives/lettersOnly.directive';
 import { RecipePreviewComponent } from './recipe-preview/recipe-preview.component';
+import { RecipeResolver } from 'src/resolvers/recipe.resolver';
 
 @NgModule({
   declarations: [
@@ -38,7 +38,6 @@ import { RecipePreviewComponent } from './recipe-preview/recipe-preview.componen
     AddRecipeComponent,
     EditRecipeComponent,
     newLineAsEnterPipe,
-    LettersOnly,
     RecipePreviewComponent,
   ],
   imports: [
@@ -62,6 +61,7 @@ import { RecipePreviewComponent } from './recipe-preview/recipe-preview.componen
     TuiIslandModule,
     TuiInputNumberModule,
   ],
+  providers: [RecipeResolver],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

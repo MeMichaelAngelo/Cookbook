@@ -9,6 +9,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RecipesService } from '../recipes.service';
 import { RecipeInterface } from '../interfaces/recipe';
 import { Ingredient } from '../interfaces/ingredient';
+import { Subject, takeUntil } from 'rxjs';
+import { KitchenMeasures } from '../enums/kitchen-measures.enum';
 
 @Component({
   selector: 'app-edit-recipe',
@@ -20,7 +22,8 @@ import { Ingredient } from '../interfaces/ingredient';
 export class EditRecipeComponent implements OnInit {
   itemId: string = '';
   tag = '';
-  readonly unitTypes = ['g', 'dag', 'kg', 'ml', 'l', 'szklanki', 'szt'];
+  destroySubscribe$: Subject<boolean> = new Subject<boolean>();
+  kitchenMeasures = Object.values(KitchenMeasures);
 
   recipe: RecipeInterface = {
     name: '',
@@ -48,23 +51,31 @@ export class EditRecipeComponent implements OnInit {
   };
 
   getRecipe() {
-    this.recipesService.fetchRecipeById(this.itemId).subscribe((data) => {
-      this.recipe = data;
-      this.cdr.detectChanges();
-    });
+    this.recipesService
+      .fetchRecipeById(this.itemId)
+      .pipe(takeUntil(this.destroySubscribe$))
+      .subscribe((data) => {
+        this.recipe = data;
+        this.cdr.detectChanges();
+      });
   }
 
   addIngredient(): void {
-    const newIngredient = {
-      name: this.ingredient.name,
-      amount: this.ingredient.amount,
-      type: this.ingredient.type,
-    };
+    const { name, amount, type } = this.ingredient;
+    const newIngredient = { name, amount, type };
+
     this.recipe.ingredients.push(newIngredient);
     this.recipe = { ...this.recipe };
-    this.ingredient.name = '';
-    this.ingredient.type = 'g';
-    this.ingredient.amount = null;
+
+    this.resetIngredient();
+  }
+
+  resetIngredient(): void {
+    this.ingredient = {
+      name: '',
+      amount: null,
+      type: 'g',
+    };
   }
 
   addTagByEnter(): void {
@@ -104,8 +115,11 @@ export class EditRecipeComponent implements OnInit {
   }
 
   update() {
-    this.recipesService.update(this.itemId, this.recipe).subscribe(() => {
-      this.router.navigate(['/']).then();
-    });
+    this.recipesService
+      .update(this.itemId, this.recipe)
+      .pipe(takeUntil(this.destroySubscribe$))
+      .subscribe(() => {
+        this.router.navigate(['/']).then();
+      });
   }
 }
