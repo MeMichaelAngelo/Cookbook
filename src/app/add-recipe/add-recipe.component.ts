@@ -1,13 +1,14 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  OnInit,
   ViewEncapsulation,
 } from '@angular/core';
 import { RecipeInterface } from '../interfaces/recipe';
 import { RecipesService } from '../recipes.service';
 import { Router } from '@angular/router';
 import { Ingredient } from '../interfaces/ingredient';
+import { KitchenMeasures } from '../enums/kitchen-measures.enum';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-add-recipe',
@@ -16,7 +17,7 @@ import { Ingredient } from '../interfaces/ingredient';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class AddRecipeComponent implements OnInit {
+export class AddRecipeComponent {
   newRecipe: RecipeInterface = {
     name: '',
     ingredients: [],
@@ -31,51 +32,81 @@ export class AddRecipeComponent implements OnInit {
   };
 
   tag = '';
+  kitchenMeasures = Object.values(KitchenMeasures);
+  displayError: string | null = null;
+  destroySubscribe$: Subject<boolean> = new Subject<boolean>();
 
-  readonly unitTypes = ['g', 'dag', 'kg', 'ml', 'l', 'szklanki', 'szt'];
   constructor(private recipesService: RecipesService, private router: Router) {}
 
-  ngOnInit(): void {}
-
   addIngredient(): void {
-    this.newRecipe.ingredients.push({
-      name: this.ingredient.name,
-      amount: this.ingredient.amount,
-      type: this.ingredient.type,
-    });
-    this.ingredient.name = '';
-    this.ingredient.type = 'g';
-    this.ingredient.amount = null;
+    const { name, amount, type } = this.ingredient;
+    const newIngredient = { name, amount, type };
+
+    this.newRecipe.ingredients.push(newIngredient);
+    this.newRecipe = { ...this.newRecipe };
+
+    this.resetIngredient();
   }
 
-  isButtonDisabled(): boolean {
-    return !this.tag.trim();
+  resetIngredient(): void {
+    this.ingredient = {
+      name: '',
+      amount: null,
+      type: 'g',
+    };
+  }
+
+  disableTagWhenEmpty(): boolean {
+    return !this.tag.trim() || !!this.displayError;
+  }
+
+  refreshChildComponent() {
+    return (this.newRecipe = { ...this.newRecipe });
   }
 
   addTag(): void {
     this.newRecipe.tags.push(this.tag);
+    this.newRecipe = { ...this.newRecipe };
     this.tag = '';
   }
 
-  create(): void {
-    this.recipesService.create(this.newRecipe).subscribe(() => {
-      this.router.navigate(['/']);
-    });
+  addTagByEnter(): void {
+    if (this.tag.trim() !== '') {
+      this.addTag();
+    }
   }
 
-  removeIngredient(ingredient: Ingredient) {
+  createRecipe(): void {
+    this.recipesService
+      .createRecipe(this.newRecipe)
+      .pipe(takeUntil(this.destroySubscribe$))
+      .subscribe(() => {
+        this.router.navigate(['/']);
+      });
+  }
+
+  removeIngredient(ingredient: Ingredient): void {
     this.newRecipe.ingredients = this.newRecipe.ingredients.filter(
       (item) => item !== ingredient
     );
   }
 
-  removeTag(tag: string) {
+  removeTag(tag: string): void {
     this.newRecipe.tags = this.newRecipe.tags.filter((item) => item !== tag);
   }
 
-  onKeyDown(event: KeyboardEvent): void {
+  recipeNameValidation(event: KeyboardEvent): void {
     if (event.key !== 'Backspace' && this.newRecipe.name.length >= 40) {
       event.preventDefault();
     }
+  }
+
+  preventTagRepetiton(value: string) {
+    const tag = this.newRecipe.tags.find((el) => el === value);
+    this.displayError = tag ? 'Tag istnieje' : null;
+  }
+
+  ngOnDestroy() {
+    this.destroySubscribe$.unsubscribe();
   }
 }

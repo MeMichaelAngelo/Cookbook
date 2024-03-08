@@ -30,11 +30,7 @@ app-add-recipe {
     width: 720px;
     margin: 0 auto;
     margin-top: 6%;
-    overflow: auto;
-  }
-
-  .ingredients-and-description-space {
-    max-height: 550px;
+    max-height: 645px;
     overflow: auto;
   }
 
@@ -69,56 +65,6 @@ app-add-recipe {
     tui-svg svg {
       font-size: 20px;
     }
-  }
-
-  .recipe-name {
-    font-family: "Courgette-Regular";
-    font-size: 24px;
-    padding-bottom: 30px;
-    text-align: center;
-    margin: 0 auto;
-    overflow: auto;
-    word-wrap: break-word;
-    max-height: 60px;
-    max-width: 80%;
-  }
-
-  .ingredients-space {
-    padding-top: 18px;
-    margin: 0 auto;
-    max-width: 80%;
-    font-family: "Courgette-Regular";
-    font-size: 16px;
-    padding-bottom: 30px;
-  }
-
-  .description-space {
-    font-family: "Courgette-Regular";
-    margin: 0 auto;
-    font-size: 16px;
-    word-wrap: break-word;
-    max-width: 80%;
-    overflow: auto;
-  }
-
-  .tags-space {
-    padding-top: 10px;
-    margin: 0 auto;
-    max-width: 85%;
-
-    .tags-text {
-      font-family: "Courgette-Regular";
-      font-weight: bold;
-      font-size: 16px;
-    }
-  }
-
-  .remove-button {
-    background: red;
-    color: white;
-    border-radius: 4px;
-    padding: 10;
-    cursor: pointer;
   }
 
   .scrollbar::-webkit-scrollbar {
