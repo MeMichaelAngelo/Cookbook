@@ -6,7 +6,8 @@
           [(ngModel)]="newRecipe.name"
           tuiTextfieldSize="s"
           class="input"
-          (keydown)="onKeyDown($event)"
+          (keydown)="recipeNameValidation($event)"
+          (ngModelChange)="refreshChildComponent()"
           (paste)="(false)"
         >
           Recipe name
@@ -26,7 +27,6 @@
           tuiTextfieldSize="s"
           type="text"
           class="input"
-          lettersOnly
         >
           Ingredient
         </tui-input>
@@ -52,7 +52,7 @@
             <input tuiTextfield />
             <tui-data-list-wrapper
               *tuiDataList
-              [items]="unitTypes"
+              [items]="kitchenMeasures"
             ></tui-data-list-wrapper>
           </tui-select>
           <div class="small-space"></div>
@@ -71,13 +71,22 @@
       </div>
 
       <div class="height-control-size">
-        <tui-textarea [(ngModel)]="newRecipe.description" class="input">
+        <tui-textarea
+          [(ngModel)]="newRecipe.description"
+          (ngModelChange)="refreshChildComponent()"
+          class="input"
+        >
           Description
         </tui-textarea>
       </div>
 
       <div class="control-size">
-        <tui-input [(ngModel)]="tag" class="input" (keydown.enter)="addTag()">
+        <tui-input
+          [(ngModel)]="tag"
+          (ngModelChange)="preventTagRepetiton(tag)"
+          class="input"
+          (keydown.enter)="addTagByEnter()"
+        >
           Tags
         </tui-input>
         <tui-tooltip
@@ -87,6 +96,9 @@
           direction="right"
           class="tooltop-info"
         ></tui-tooltip>
+        <div>
+          {{ displayError }}
+        </div>
       </div>
 
       <button
@@ -95,7 +107,7 @@
         type="button"
         class="tui-space_right-3 tui-space_bottom-3"
         (click)="addTag()"
-        [disabled]="isButtonDisabled()"
+        [disabled]="disableTagWhenEmpty()"
       >
         Add tag
       </button>
@@ -108,58 +120,17 @@
         tuiButton
         type="button"
         class="tui-space_right-3 tui-space_bottom-3"
-        (click)="create()"
+        (click)="createRecipe()"
       >
         Create
       </button>
     </div>
 
-    <div class="create-recipe-section-right">
-      <div class="recipe-name">
-        {{ newRecipe.name }}
-      </div>
-      <div class="ingredients-and-description-space scrollbar">
-        <div class="ingredients-space">
-          <span>
-            <ul
-              *ngFor="
-                let detailsOfIngredient of newRecipe.ingredients;
-                let i = index
-              "
-            >
-              {{
-                detailsOfIngredient.name
-              }}
-              &nbsp;
-              {{
-                detailsOfIngredient.amount
-              }}
-              {{
-                detailsOfIngredient.type
-              }}
-              <button
-                class="remove-button"
-                (click)="removeIngredient(detailsOfIngredient)"
-              >
-                X
-              </button>
-            </ul>
-          </span>
-        </div>
-
-        <div
-          class="description-space"
-          [innerHTML]="newRecipe.description | newLineAsEnter"
-        ></div>
-
-        <div class="tags-space" *ngIf="newRecipe.tags.length !== 0">
-          Tags:
-          <span class="tags-text" *ngFor="let tag of newRecipe.tags">
-            {{ tag }}
-            <button class="remove-button" (click)="removeTag(tag)">X</button>
-          </span>
-        </div>
-      </div>
+    <div class="create-recipe-section-right scrollbar">
+      <app-recipe-preview
+        [choosedRecipe]="newRecipe"
+        [isPreviewMode]="false"
+      ></app-recipe-preview>
     </div>
   </div>
 </div>

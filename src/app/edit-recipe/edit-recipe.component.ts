@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   OnInit,
   ViewEncapsulation,
@@ -8,6 +9,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RecipesService } from '../recipes.service';
 import { RecipeInterface } from '../interfaces/recipe';
 import { Ingredient } from '../interfaces/ingredient';
+import { Subject, takeUntil } from 'rxjs';
+import { KitchenMeasures } from '../enums/kitchen-measures.enum';
 
 @Component({
   selector: 'app-edit-recipe',
@@ -19,7 +22,8 @@ import { Ingredient } from '../interfaces/ingredient';
 export class EditRecipeComponent implements OnInit {
   itemId: string = '';
   tag = '';
-  readonly unitTypes = ['g', 'dag', 'kg', 'ml', 'l', 'szklanki', 'szt'];
+  destroySubscribe$: Subject<boolean> = new Subject<boolean>();
+  kitchenMeasures = Object.values(KitchenMeasures);
 
   recipe: RecipeInterface = {
     name: '',
@@ -31,7 +35,8 @@ export class EditRecipeComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private recipesService: RecipesService
+    private recipesService: RecipesService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -46,21 +51,41 @@ export class EditRecipeComponent implements OnInit {
   };
 
   getRecipe() {
-    this.recipesService.fetchRecipeById(this.itemId).subscribe((data) => {
-      this.recipe = data;
-    });
+    this.recipesService
+      .fetchRecipeById(this.itemId)
+      .pipe(takeUntil(this.destroySubscribe$))
+      .subscribe((data) => {
+        this.recipe = data;
+        this.cdr.detectChanges();
+      });
   }
 
   addIngredient(): void {
-    this.recipe.ingredients.push({
-      name: this.ingredient.name,
-      amount: this.ingredient.amount,
-      type: this.ingredient.type,
-    });
-    this.ingredient.name = '';
-    this.ingredient.type = 'g';
-    this.ingredient.amount = null;
-    console.log(this.recipe.ingredients);
+    const { name, amount, type } = this.ingredient;
+    const newIngredient = { name, amount, type };
+
+    this.recipe.ingredients.push(newIngredient);
+    this.recipe = { ...this.recipe };
+
+    this.resetIngredient();
+  }
+
+  resetIngredient(): void {
+    this.ingredient = {
+      name: '',
+      amount: null,
+      type: 'g',
+    };
+  }
+
+  addTagByEnter(): void {
+    if (this.tag.trim() !== '') {
+      this.addTag();
+    }
+  }
+
+  refreshTextForChild() {
+    return (this.recipe = { ...this.recipe });
   }
 
   removeIngredient(ingredient: Ingredient) {
@@ -79,18 +104,22 @@ export class EditRecipeComponent implements OnInit {
 
   addTag(): void {
     this.recipe.tags.push(this.tag);
+    this.recipe = { ...this.recipe };
     this.tag = '';
   }
 
-  onKeyDown(event: KeyboardEvent): void {
+  handlingOfRecipeTitle(event: KeyboardEvent): void {
     if (event.key !== 'Backspace' && this.recipe.name.length >= 40) {
       event.preventDefault();
     }
   }
 
   update() {
-    this.recipesService.update(this.itemId, this.recipe).subscribe(() => {
-      this.router.navigate(['/']).then();
-    });
+    this.recipesService
+      .update(this.itemId, this.recipe)
+      .pipe(takeUntil(this.destroySubscribe$))
+      .subscribe(() => {
+        this.router.navigate(['/']).then();
+      });
   }
 }

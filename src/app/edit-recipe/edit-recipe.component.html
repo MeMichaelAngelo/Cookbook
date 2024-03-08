@@ -6,7 +6,9 @@
           [(ngModel)]="recipe.name"
           tuiTextfieldSize="s"
           class="input"
-          (keydown)="onKeyDown($event)"
+          (keydown)="handlingOfRecipeTitle($event)"
+          (ngModelChange)="refreshTextForChild()"
+          (paste)="(false)"
         >
           Recipe name
         </tui-input>
@@ -25,7 +27,6 @@
           tuiTextfieldSize="s"
           type="text"
           class="input"
-          lettersOnly
         >
           Ingredient
         </tui-input>
@@ -42,7 +43,6 @@
             Quantity
           </tui-input-number>
           <div class="small-space"></div>
-          <!-- Dać walidację na tworzenie przepisu dopiero po dodaniu przynajmniej jednego tagu, a nie dostępny "create" od razu -->
           <tui-select
             class="small-input"
             tuiTextfieldSize="s"
@@ -52,7 +52,7 @@
             <input tuiTextfield />
             <tui-data-list-wrapper
               *tuiDataList
-              [items]="unitTypes"
+              [items]="kitchenMeasures"
             ></tui-data-list-wrapper>
           </tui-select>
           <div class="small-space"></div>
@@ -71,13 +71,21 @@
       </div>
 
       <div class="height-control-size">
-        <tui-textarea [(ngModel)]="recipe.description" class="input">
+        <tui-textarea
+          [(ngModel)]="recipe.description"
+          (ngModelChange)="refreshTextForChild()"
+          class="input"
+        >
           Description
         </tui-textarea>
       </div>
 
       <div class="control-size">
-        <tui-input [(ngModel)]="tag" class="input" (keydown.enter)="addTag()">
+        <tui-input
+          [(ngModel)]="tag"
+          class="input"
+          (keydown.enter)="addTagByEnter()"
+        >
           Tags
         </tui-input>
         <tui-tooltip
@@ -113,50 +121,10 @@
     </div>
 
     <div class="create-recipe-section-right scrollbar">
-      <div class="recipe-name">
-        {{ recipe.name }}
-      </div>
-
-      <div class="ingredients-space">
-        <span>
-          <ul
-            *ngFor="
-              let detailsOfIngredient of recipe.ingredients;
-              let i = index
-            "
-          >
-            {{
-              detailsOfIngredient.name
-            }}
-            &nbsp;
-            {{
-              detailsOfIngredient.amount
-            }}
-            {{
-              detailsOfIngredient.type
-            }}
-            <button
-              class="remove-button"
-              (click)="removeIngredient(detailsOfIngredient)"
-            >
-              X
-            </button>
-          </ul>
-        </span>
-      </div>
-
-      <div
-        class="description-space"
-        [innerHTML]="recipe.description | newLineAsEnter"
-      ></div>
-
-      <div class="tags-space" *ngIf="recipe.tags.length !== 0">
-        Tags:
-        <span class="tags-text" *ngFor="let tag of recipe.tags">
-          {{ tag }}
-          <button class="remove-button" (click)="removeTag(tag)">X</button>
-        </span>
-      </div>
+      <app-recipe-preview
+        [choosedRecipe]="recipe"
+        [isPreviewMode]="false"
+      ></app-recipe-preview>
     </div>
   </div>
 </div>

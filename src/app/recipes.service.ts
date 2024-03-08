@@ -12,7 +12,7 @@ export class RecipesService {
     return this.http.get<RecipeInterface[]>('http://localhost:3000/recipe');
   }
 
-  create(newRecipe: RecipeInterface) {
+  createRecipe(newRecipe: RecipeInterface) {
     return this.http.post<RecipeInterface>(
       'http://localhost:3000/recipe',
       newRecipe

@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AllRecipesComponent } from './all-recipes/all-recipes.component';
 import { AddRecipeComponent } from './add-recipe/add-recipe.component';
 import { EditRecipeComponent } from './edit-recipe/edit-recipe.component';
+import { RecipeResolver } from 'src/resolvers/recipe.resolver';
 
 const routes: Routes = [
   {
@@ -16,6 +17,7 @@ const routes: Routes = [
   {
     path: 'edit/:id',
     component: EditRecipeComponent,
+    resolve: { recipe: RecipeResolver },
   },
 ];
 

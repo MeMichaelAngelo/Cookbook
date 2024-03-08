@@ -60,33 +60,10 @@
     </div>
 
     <div class="create-recipe-section-right scrollbar">
-      <div *ngIf="selectedRecipe">
-        <div class="recipe-name">{{ selectedRecipe.name }}</div>
-        <div class="ingredients-space">
-          <div class="headline">Ingredients</div>
-          <div
-            class="headline-break"
-            *ngFor="let ingredient of selectedRecipe?.ingredients"
-          >
-            {{ ingredient.name }} &nbsp; {{ ingredient.amount }}
-            {{ ingredient.type }}
-          </div>
-        </div>
-        <div class="description-space">
-          <div class="headline">Description</div>
-          <div class="headline-break">{{ selectedRecipe.description }}</div>
-        </div>
-        <div class="tags-space">
-          <div class="headline">Tags</div>
-          <div class="headline-break">
-            <ng-container
-              *ngFor="let tag of selectedRecipe?.tags; let isLast = last"
-            >
-              {{ tag }}{{ isLast ? "" : "," }}
-            </ng-container>
-          </div>
-        </div>
-      </div>
+      <app-recipe-preview
+        [choosedRecipe]="selectedRecipe"
+        [isPreviewMode]="true"
+      ></app-recipe-preview>
     </div>
   </div>
 </div>

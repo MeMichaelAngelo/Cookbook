@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { RecipeInterface } from '../interfaces/recipe';
 import { RecipesService } from '../recipes.service';
 import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-all-recepies',
@@ -15,10 +15,11 @@ export class AllRecipesComponent implements OnInit {
   selectedRecipe: RecipeInterface | null = null;
   searchText: string = '';
   searchField: RecipeInterface[] = [];
-  private searchTextSubject = new Subject<string>();
+  private searchTextSubject$ = new Subject<string>();
+  destroySubscribe$: Subject<boolean> = new Subject<boolean>();
 
   constructor(private recipesService: RecipesService) {
-    this.searchTextSubject.pipe(debounceTime(300)).subscribe(() => {
+    this.searchTextSubject$.pipe(debounceTime(300)).subscribe(() => {
       this.searchTagOrRecipeName();
     });
   }
@@ -27,23 +28,33 @@ export class AllRecipesComponent implements OnInit {
     this.getAllRecipes();
   }
 
-  getAllRecipes() {
-    return this.recipesService.getAllRecipes().subscribe((data) => {
-      this.allRecipes = data;
-      this.searchField = this.allRecipes;
-    });
+  getAllRecipes(): void {
+    this.recipesService
+      .getAllRecipes()
+      .pipe(takeUntil(this.destroySubscribe$))
+      .subscribe((data) => {
+        this.allRecipes = data;
+        this.searchField = this.allRecipes;
+      });
   }
 
   displayRecipePreview(recipe: RecipeInterface) {
-    this.recipesService.fetchRecipeById(recipe._id).subscribe((recipe) => {
-      this.selectedRecipe = recipe;
-    });
+    this.recipesService
+      .fetchRecipeById(recipe._id)
+      .pipe(takeUntil(this.destroySubscribe$))
+      .subscribe((recipe) => {
+        this.selectedRecipe = recipe;
+      });
   }
 
   deleteRecipe(id: string) {
-    this.recipesService.delete(id).subscribe(() => {
-      this.allRecipes = this.allRecipes.filter((recipe) => recipe._id !== id);
-    });
+    this.recipesService
+      .delete(id)
+      .pipe(takeUntil(this.destroySubscribe$))
+      .subscribe(() => {
+        this.allRecipes = this.allRecipes.filter((recipe) => recipe._id !== id);
+        this.searchTagOrRecipeName();
+      });
   }
 
   searchTagOrRecipeName(): void {
@@ -51,16 +62,20 @@ export class AllRecipesComponent implements OnInit {
       this.searchField = this.allRecipes;
       return;
     }
-    this.searchField = this.allRecipes.filter((el) => {
-      return (
+    this.searchField = this.allRecipes.filter(
+      (el) =>
         el.tags.some((tag) =>
           tag.toLowerCase().includes(this.searchText.toLowerCase())
         ) || el.name.toLowerCase().includes(this.searchText.toLowerCase())
-      );
-    });
+    );
   }
 
   onSearchTextChange(value: string): void {
-    this.searchTextSubject.next(value);
+    this.searchTextSubject$.next(value);
+  }
+
+  ngOnDestroy() {
+    this.searchTextSubject$.unsubscribe();
+    this.destroySubscribe$.unsubscribe();
   }
 }
