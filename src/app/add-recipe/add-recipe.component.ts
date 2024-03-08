@@ -8,7 +8,7 @@ import { RecipesService } from '../recipes.service';
 import { Router } from '@angular/router';
 import { Ingredient } from '../interfaces/ingredient';
 import { KitchenMeasures } from '../enums/kitchen-measures.enum';
-import { Subject, first, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-add-recipe',
@@ -60,7 +60,7 @@ export class AddRecipeComponent {
     return !this.tag.trim() || !!this.displayError;
   }
 
-  refreshTextForChild() {
+  refreshChildComponent() {
     return (this.newRecipe = { ...this.newRecipe });
   }
 
@@ -95,7 +95,7 @@ export class AddRecipeComponent {
     this.newRecipe.tags = this.newRecipe.tags.filter((item) => item !== tag);
   }
 
-  handlingOfRecipeTitle(event: KeyboardEvent): void {
+  recipeNameValidation(event: KeyboardEvent): void {
     if (event.key !== 'Backspace' && this.newRecipe.name.length >= 40) {
       event.preventDefault();
     }

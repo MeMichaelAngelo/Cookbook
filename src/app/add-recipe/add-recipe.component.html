@@ -6,8 +6,8 @@
           [(ngModel)]="newRecipe.name"
           tuiTextfieldSize="s"
           class="input"
-          (keydown)="handlingOfRecipeTitle($event)"
-          (ngModelChange)="refreshTextForChild()"
+          (keydown)="recipeNameValidation($event)"
+          (ngModelChange)="refreshChildComponent()"
           (paste)="(false)"
         >
           Recipe name
@@ -73,7 +73,7 @@
       <div class="height-control-size">
         <tui-textarea
           [(ngModel)]="newRecipe.description"
-          (ngModelChange)="refreshTextForChild()"
+          (ngModelChange)="refreshChildComponent()"
           class="input"
         >
           Description
