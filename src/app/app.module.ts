@@ -30,6 +30,7 @@ import {
 import { newLineAsEnterPipe } from './directives/newLineAsEnter.pipe';
 import { RecipePreviewComponent } from './recipe-preview/recipe-preview.component';
 import { RecipeResolver } from 'src/resolvers/recipe.resolver';
+import { MainLayoutComponent } from './main-layout/main-layout.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { RecipeResolver } from 'src/resolvers/recipe.resolver';
     EditRecipeComponent,
     newLineAsEnterPipe,
     RecipePreviewComponent,
+    MainLayoutComponent,
   ],
   imports: [
     BrowserModule,
