@@ -1,69 +1,67 @@
-<div class="book-image">
-  <div class="book-sector">
-    <div class="create-recipe-section-left">
-      <div class="search-and-add-recipe">
-        <tui-input>
-          Enter recipe name or recipe's tag...
-          <input
-            class="search-input"
-            (ngModelChange)="onSearchTextChange($event)"
-            [(ngModel)]="searchText"
-            tuiTextfield
-          />
-        </tui-input>
-        <button
-          class="add-recipe-button"
-          tuiButton
-          type="button"
-          appearance="newRecipe"
-          routerLink="/create"
-        >
-          + Add recipe
-        </button>
-      </div>
-      <div class="recipe-list-sector scrollbar">
-        <div class="list-of-recipes" *ngFor="let recipe of searchField">
-          <tui-island>
-            <h3 class="tui-island__title title-details">{{ recipe.name }}</h3>
-            <div class="tui-island__paragraph tui-island__paragraph_button">
-              <div class="separate-buttons">
-                <button
-                  tuiButton
-                  type="button"
-                  appearance="preview"
-                  (click)="displayRecipePreview(recipe)"
-                >
-                  Preview
-                </button>
-                <button
-                  tuiButton
-                  type="button"
-                  appearance="edit"
-                  [routerLink]="['edit', recipe._id]"
-                >
-                  Edit
-                </button>
-                <button
-                  *ngIf="recipe._id"
-                  tuiButton
-                  type="button"
-                  appearance="secondary-destructive"
-                  (click)="deleteRecipe(recipe._id)"
-                >
-                  Delete
-                </button>
-              </div>
+<div class="book-sector">
+  <div class="create-recipe-section-left">
+    <div class="search-and-add-recipe">
+      <tui-input>
+        Enter recipe name or recipe's tag...
+        <input
+          class="search-input"
+          (ngModelChange)="onSearchTextChange($event)"
+          [(ngModel)]="searchText"
+          tuiTextfield
+        />
+      </tui-input>
+      <button
+        class="add-recipe-button"
+        tuiButton
+        type="button"
+        appearance="newRecipe"
+        routerLink="/create"
+      >
+        + Add recipe
+      </button>
+    </div>
+    <div class="recipe-list-sector scrollbar">
+      <div class="list-of-recipes" *ngFor="let recipe of searchField">
+        <tui-island>
+          <h3 class="tui-island__title title-details">{{ recipe.name }}</h3>
+          <div class="tui-island__paragraph tui-island__paragraph_button">
+            <div class="separate-buttons">
+              <button
+                tuiButton
+                type="button"
+                appearance="preview"
+                (click)="displayRecipePreview(recipe)"
+              >
+                Preview
+              </button>
+              <button
+                tuiButton
+                type="button"
+                appearance="edit"
+                [routerLink]="['edit', recipe._id]"
+              >
+                Edit
+              </button>
+              <button
+                *ngIf="recipe._id"
+                tuiButton
+                type="button"
+                appearance="secondary-destructive"
+                (click)="deleteRecipe(recipe._id)"
+              >
+                Delete
+              </button>
             </div>
-          </tui-island>
-        </div>
+          </div>
+        </tui-island>
       </div>
     </div>
+  </div>
 
-    <div class="create-recipe-section-right scrollbar">
-      <app-recipe-preview
-        [choosedRecipe]="selectedRecipe"
-        [isPreviewMode]="true"
-      ></app-recipe-preview>
-    </div>
+  <div class="create-recipe-section-right scrollbar">
+    <app-recipe-preview
+      [choosedRecipe]="selectedRecipe"
+      [isPreviewMode]="true"
+    ></app-recipe-preview>
   </div>
 </div>

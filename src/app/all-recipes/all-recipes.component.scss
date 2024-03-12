@@ -32,16 +32,6 @@
 }
 
 app-all-recepies {
-  .book-image {
-    position: absolute;
-    width: 100%;
-    background-image: url("../../assets/opened-book.png");
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center center;
-    height: 100vh;
-  }
-
   .book-sector {
     display: flex;
   }
