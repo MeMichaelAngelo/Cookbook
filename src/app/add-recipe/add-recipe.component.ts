@@ -3,12 +3,13 @@ import {
   Component,
   ViewEncapsulation,
 } from '@angular/core';
-import { RecipeInterface } from '../interfaces/recipe';
 import { RecipesService } from '../recipes.service';
 import { Router } from '@angular/router';
-import { Ingredient } from '../interfaces/ingredient';
 import { KitchenMeasures } from '../enums/kitchen-measures.enum';
 import { Subject, takeUntil } from 'rxjs';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Ingredient } from '../interfaces/ingredient';
+import { RecipeInterface } from '../interfaces/recipe';
 
 @Component({
   selector: 'app-add-recipe',
@@ -18,55 +19,71 @@ import { Subject, takeUntil } from 'rxjs';
   encapsulation: ViewEncapsulation.None,
 })
 export class AddRecipeComponent {
-  newRecipe: RecipeInterface = {
-    name: '',
-    ingredients: [],
-    description: '',
-    tags: [],
-  };
-
-  ingredient: Ingredient = {
-    name: '',
-    amount: null,
-    type: 'g',
-  };
-
   tag = '';
   kitchenMeasures = Object.values(KitchenMeasures);
+  recipeForm!: FormGroup;
+  ingredientForm!: FormGroup;
   displayError: string | null = null;
   destroySubscribe$: Subject<boolean> = new Subject<boolean>();
+  ingredientArray: Ingredient[] = [];
 
-  constructor(private recipesService: RecipesService, private router: Router) {}
-
-  addIngredient(): void {
-    const { name, amount, type } = this.ingredient;
-    const newIngredient = { name, amount, type };
-
-    this.newRecipe.ingredients.push(newIngredient);
-    this.newRecipe = { ...this.newRecipe };
-
-    this.resetIngredient();
-  }
-
-  resetIngredient(): void {
-    this.ingredient = {
-      name: '',
-      amount: null,
-      type: 'g',
+  get wholeForm(): RecipeInterface {
+    return {
+      ...this.recipeForm.value,
+      ingredients: this.ingredientArray,
     };
   }
 
-  disableTagWhenEmpty(): boolean {
+  constructor(
+    private recipesService: RecipesService,
+    private router: Router,
+    private fb: FormBuilder
+  ) {}
+
+  ngOnInit(): void {
+    this.initForms();
+  }
+
+  private initForms(): void {
+    this.recipeForm = this.fb.group({
+      name: ['', Validators.required],
+      description: ['', Validators.required],
+      tags: this.fb.array([]),
+    });
+
+    this.ingredientForm = this.fb.group({
+      name: [null, Validators.required],
+      amount: [null, [Validators.required, Validators.min(0.01)]],
+      type: [KitchenMeasures.GRAM, Validators.required],
+    });
+  }
+
+  addIngredientValidator(): boolean {
+    let ingredientFormStatus = this.ingredientForm.status;
+    return ingredientFormStatus === 'INVALID';
+  }
+
+  addAndResetIngredient(): void {
+    this.ingredientArray.push(this.ingredientForm.value);
+    this.resetIngredientFields();
+  }
+
+  private resetIngredientFields(): void {
+    this.ingredientForm?.setValue({
+      name: null,
+      amount: null,
+      type: KitchenMeasures.GRAM,
+    });
+  }
+
+  disableTagIfEmpty(): boolean {
     return !this.tag.trim() || !!this.displayError;
   }
 
-  refreshChildComponent() {
-    return (this.newRecipe = { ...this.newRecipe });
-  }
-
   addTag(): void {
-    this.newRecipe.tags.push(this.tag);
-    this.newRecipe = { ...this.newRecipe };
+    let formTags = this.recipeForm.get('tags')?.value;
+    formTags.push(this.tag);
+    formTags = { ...formTags };
     this.tag = '';
   }
 
@@ -78,31 +95,33 @@ export class AddRecipeComponent {
 
   createRecipe(): void {
     this.recipesService
-      .createRecipe(this.newRecipe)
+      .createRecipe({
+        ...this.recipeForm.value,
+        ingredients: [...this.ingredientArray],
+      })
       .pipe(takeUntil(this.destroySubscribe$))
       .subscribe(() => {
         this.router.navigate(['/']);
       });
-  }
-
-  removeIngredient(ingredient: Ingredient): void {
-    this.newRecipe.ingredients = this.newRecipe.ingredients.filter(
-      (item) => item !== ingredient
-    );
-  }
-
-  removeTag(tag: string): void {
-    this.newRecipe.tags = this.newRecipe.tags.filter((item) => item !== tag);
+    console.log('sdads', {
+      ...this.recipeForm.value,
+      ingredients: [...this.ingredientArray],
+    });
   }
 
   recipeNameValidation(event: KeyboardEvent): void {
-    if (event.key !== 'Backspace' && this.newRecipe.name.length >= 40) {
+    if (
+      event.key !== 'Backspace' &&
+      this.recipeForm.get('name')?.value.length >= 40
+    ) {
       event.preventDefault();
     }
   }
 
   preventTagRepetiton(value: string) {
-    const tag = this.newRecipe.tags.find((el) => el === value);
+    const tag = this.recipeForm
+      .get('tags')
+      ?.value.find((el: string) => el === value);
     this.displayError = tag ? 'Tag istnieje' : null;
   }
 

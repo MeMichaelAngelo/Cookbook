@@ -1,5 +1,8 @@
 <div *ngIf="choosedRecipe">
-  <div class="recipe-name">{{ choosedRecipe.name }}</div>
+  <div class="recipe-name">
+    {{ choosedRecipe.name }}
+  </div>
+
   <div class="ingredients-space">
     <div class="headline" *ngIf="choosedRecipe.ingredients.length">
       Ingredients
