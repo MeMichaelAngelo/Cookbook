@@ -1,11 +1,13 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Input,
   ViewEncapsulation,
 } from '@angular/core';
-import { RecipeInterface } from '../interfaces/recipe';
 import { Ingredient } from '../interfaces/ingredient';
+import { Subscription } from 'rxjs';
+import { RecipeInterface } from '../interfaces/recipe';
 
 @Component({
   selector: 'app-recipe-preview',
@@ -16,12 +18,12 @@ import { Ingredient } from '../interfaces/ingredient';
 })
 export class RecipePreviewComponent {
   @Input()
-  choosedRecipe: RecipeInterface | null = null;
-
+  choosedRecipe!: RecipeInterface;
   @Input()
   isPreviewMode: boolean = false;
+  subscription: Subscription | undefined;
 
-  constructor() {}
+  constructor(private cdr: ChangeDetectorRef) {}
 
   removeTag(tag: string) {
     if (this.choosedRecipe != null) {

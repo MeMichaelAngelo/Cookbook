@@ -1,0 +1,7 @@
+<div *ngIf="errors">
+  <ul>
+    <li *ngFor="let error of errors">
+      <div class="error-alert">{{ error ? "Wprowadź wartość" : "" }}</div>
+    </li>
+  </ul>
+</div>
