@@ -7,7 +7,7 @@ import { RecipesService } from '../recipes.service';
 import { Router } from '@angular/router';
 import { KitchenMeasures } from '../enums/kitchen-measures.enum';
 import { Subject, takeUntil } from 'rxjs';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Ingredient } from '../interfaces/ingredient';
 import { RecipeInterface } from '../interfaces/recipe';
 
@@ -74,6 +74,7 @@ export class AddRecipeComponent {
       amount: null,
       type: KitchenMeasures.GRAM,
     });
+    this.ingredientForm.markAsUntouched();
   }
 
   disableTagIfEmpty(): boolean {
@@ -94,19 +95,17 @@ export class AddRecipeComponent {
   }
 
   createRecipe(): void {
-    this.recipesService
-      .createRecipe({
-        ...this.recipeForm.value,
-        ingredients: [...this.ingredientArray],
-      })
-      .pipe(takeUntil(this.destroySubscribe$))
-      .subscribe(() => {
-        this.router.navigate(['/']);
-      });
-    console.log('sdads', {
-      ...this.recipeForm.value,
-      ingredients: [...this.ingredientArray],
-    });
+    if (this.recipeForm.valid && this.ingredientArray.length > 0) {
+      this.recipesService
+        .createRecipe({
+          ...this.recipeForm.value,
+          ingredients: [...this.ingredientArray],
+        })
+        .pipe(takeUntil(this.destroySubscribe$))
+        .subscribe(() => {
+          this.router.navigate(['/']);
+        });
+    }
   }
 
   recipeNameValidation(event: KeyboardEvent): void {
@@ -122,10 +121,17 @@ export class AddRecipeComponent {
     const tag = this.recipeForm
       .get('tags')
       ?.value.find((el: string) => el === value);
-    this.displayError = tag ? 'Tag istnieje' : null;
+    this.displayError = tag ? 'Taki tag już istnieje' : null;
   }
 
   ngOnDestroy() {
     this.destroySubscribe$.unsubscribe();
+  }
+
+  fetchErrors(controlName: string, form: FormGroup): string[] | undefined {
+    const formControl = form.get(controlName);
+    if (!formControl?.touched) return;
+
+    return formControl?.errors ? Object.values(formControl?.errors) : [];
   }
 }

@@ -11,13 +11,9 @@
         >
           Recipe name
         </tui-input>
-        <tui-tooltip
-          [showDelay]="200"
-          [hideDelay]="100"
-          content="Nazwa przepisu, który będzie się wyświetlał na liście potraw w głównym menu"
-          direction="right"
-          class="tooltop-info"
-        ></tui-tooltip>
+        <app-form-errors-validator
+          [errors]="fetchErrors('name', recipeForm)"
+        ></app-form-errors-validator>
       </div>
 
       <ng-container [formGroup]="ingredientForm">
@@ -30,6 +26,9 @@
           >
             Ingredient
           </tui-input>
+          <app-form-errors-validator
+            [errors]="fetchErrors('name', ingredientForm)"
+          ></app-form-errors-validator>
         </div>
 
         <div class="control-size">
@@ -42,6 +41,9 @@
             >
               Quantity
             </tui-input-number>
+            <app-form-errors-validator
+              [errors]="fetchErrors('amount', ingredientForm)"
+            ></app-form-errors-validator>
             <div class="small-space"></div>
             <tui-select
               formControlName="type"
@@ -55,6 +57,9 @@
                 [items]="kitchenMeasures"
               ></tui-data-list-wrapper>
             </tui-select>
+            <app-form-errors-validator
+              [errors]="fetchErrors('type', ingredientForm)"
+            ></app-form-errors-validator>
             <div class="small-space"></div>
 
             <button
@@ -108,7 +113,6 @@
       >
         Add tag
       </button>
-      <!-- button obecnie bez walidacji -->
       <button
         appearance="primary"
         tuiButton
@@ -119,6 +123,7 @@
         Create
       </button>
     </div>
+
     <div class="create-recipe-section-right scrollbar">
       <app-recipe-preview
         [choosedRecipe]="wholeForm"
