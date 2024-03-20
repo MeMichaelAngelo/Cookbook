@@ -77,7 +77,7 @@ export class AddRecipeComponent {
     this.ingredientForm.markAsUntouched();
   }
 
-  disableTagIfEmpty(): boolean {
+  disableTagButtonIfEmpty(): boolean {
     return !this.tag.trim() || !!this.displayError;
   }
 
