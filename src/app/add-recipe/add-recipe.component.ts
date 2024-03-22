@@ -19,18 +19,18 @@ import { RecipeInterface } from '../interfaces/recipe';
   encapsulation: ViewEncapsulation.None,
 })
 export class AddRecipeComponent {
-  tag = '';
+  tag: string = '';
   kitchenMeasures = Object.values(KitchenMeasures);
   recipeForm!: FormGroup;
   ingredientForm!: FormGroup;
   displayError: string | null = null;
   destroySubscribe$: Subject<boolean> = new Subject<boolean>();
-  ingredientArray: Ingredient[] = [];
+  ingredientsArray: Ingredient[] = [];
 
   get wholeForm(): RecipeInterface {
     return {
       ...this.recipeForm.value,
-      ingredients: this.ingredientArray,
+      ingredients: this.ingredientsArray,
     };
   }
 
@@ -64,7 +64,7 @@ export class AddRecipeComponent {
   }
 
   addAndResetIngredient(): void {
-    this.ingredientArray.push(this.ingredientForm.value);
+    this.ingredientsArray.push(this.ingredientForm.value);
     this.resetIngredientFields();
   }
 
@@ -95,11 +95,11 @@ export class AddRecipeComponent {
   }
 
   createRecipe(): void {
-    if (this.recipeForm.valid && this.ingredientArray.length > 0) {
+    if (this.recipeForm.valid && this.ingredientsArray.length > 0) {
       this.recipesService
         .createRecipe({
           ...this.recipeForm.value,
-          ingredients: [...this.ingredientArray],
+          ingredients: [...this.ingredientsArray],
         })
         .pipe(takeUntil(this.destroySubscribe$))
         .subscribe(() => {
@@ -124,14 +124,14 @@ export class AddRecipeComponent {
     this.displayError = tag ? 'Taki tag już istnieje' : null;
   }
 
-  ngOnDestroy() {
-    this.destroySubscribe$.unsubscribe();
-  }
-
   fetchErrors(controlName: string, form: FormGroup): string[] | undefined {
     const formControl = form.get(controlName);
     if (!formControl?.touched) return;
 
     return formControl?.errors ? Object.values(formControl?.errors) : [];
+  }
+
+  ngOnDestroy() {
+    this.destroySubscribe$.unsubscribe();
   }
 }

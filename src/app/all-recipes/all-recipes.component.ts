@@ -17,7 +17,7 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 })
 export class AllRecipesComponent implements OnInit {
   allRecipes: RecipeInterface[] = [];
-  selectedRecipe: RecipeInterface | null = null;
+  selectedRecipe!: RecipeInterface;
   searchText: string = '';
   searchField: RecipeInterface[] = [];
   private searchTextSubject$ = new Subject<string>();
@@ -53,6 +53,7 @@ export class AllRecipesComponent implements OnInit {
       .pipe(takeUntil(this.destroySubscribe$))
       .subscribe((recipe) => {
         this.selectedRecipe = recipe;
+        this.cdr.markForCheck();
       });
   }
 
