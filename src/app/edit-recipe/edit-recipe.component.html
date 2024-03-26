@@ -32,7 +32,7 @@
         </div>
 
         <div class="control-size">
-          <div class="flex">
+          <div class="flex-controls-sector">
             <tui-input-number
               formControlName="amount"
               tuiTextfieldSize="s"
@@ -104,25 +104,30 @@
           {{ displayError }}
         </div>
       </div>
-      <button
-        appearance="primary"
-        tuiButton
-        type="button"
-        class="tui-space_right-3 tui-space_bottom-3"
-        (click)="addTag()"
-        [disabled]="disableTagButtonIfEmpty()"
-      >
-        Add tag
-      </button>
-      <button
-        appearance="primary"
-        tuiButton
-        type="button"
-        class="tui-space_right-3 tui-space_bottom-3"
-        (click)="updateRecipe()"
-      >
-        Update
-      </button>
+      <div class="control-size">
+        <div class="flex-controls-sector">
+          <button
+            appearance="primary"
+            tuiButton
+            type="button"
+            class="tui-space_bottom-3 small-input"
+            (click)="addTag()"
+            [disabled]="disableTagButtonIfEmpty()"
+          >
+            Add tag
+          </button>
+          <div class="small-space"></div>
+          <button
+            appearance="primary"
+            tuiButton
+            type="button"
+            class="tui-space_right-3 tui-space_bottom-3 small-input"
+            (click)="updateRecipe()"
+          >
+            Update
+          </button>
+        </div>
+      </div>
     </div>
     <div class="create-recipe-section-right scrollbar">
       <app-recipe-preview
