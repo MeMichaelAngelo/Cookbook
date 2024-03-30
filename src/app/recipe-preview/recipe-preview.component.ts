@@ -40,4 +40,8 @@ export class RecipePreviewComponent {
       );
     }
   }
+
+  trackByTags(index: number, item: string): string {
+    return item;
+  }
 }

@@ -80,6 +80,10 @@ export class AllRecipesComponent implements OnInit {
     );
   }
 
+  trackById(index: number, item: RecipeInterface): string | RecipeInterface {
+    return item._id || item;
+  }
+
   onSearchTextChange(value: string): void {
     this.searchTextSubject$.next(value);
   }
