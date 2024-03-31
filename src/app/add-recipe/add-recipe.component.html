@@ -1,134 +1,141 @@
-<div class="book-sector">
-  <div class="create-recipe-section-left">
-    <div class="control-size">
-      <tui-input
-        [(ngModel)]="newRecipe.name"
-        tuiTextfieldSize="s"
-        class="input"
-        (keydown)="recipeNameValidation($event)"
-        (ngModelChange)="refreshChildComponent()"
-        (paste)="(false)"
-      >
-        Recipe name
-      </tui-input>
-      <tui-tooltip
-        [showDelay]="200"
-        [hideDelay]="100"
-        content="Nazwa przepisu, który będzie się wyświetlał na liście potraw w głównym menu"
-        direction="right"
-        class="tooltop-info"
-      ></tui-tooltip>
-    </div>
-
-    <div class="control-size">
-      <tui-input
-        [(ngModel)]="ingredient.name"
-        tuiTextfieldSize="s"
-        type="text"
-        class="input"
-      >
-        Ingredient
-      </tui-input>
-    </div>
-
-    <div class="control-size">
-      <div class="flex-inputs-sector">
-        <tui-input-number
-          [(ngModel)]="ingredient.amount"
+<form [formGroup]="recipeForm">
+  <div class="book-sector">
+    <div class="create-recipe-section-left">
+      <div class="control-size">
+        <tui-input
+          formControlName="name"
           tuiTextfieldSize="s"
-          class="small-input"
-          [precision]="2"
+          class="input"
+          (keydown)="recipeNameValidation($event)"
+          (paste)="(false)"
         >
-          Quantity
-        </tui-input-number>
-        <div class="small-space"></div>
-        <tui-select
-          class="small-input"
-          tuiTextfieldSize="s"
-          [(ngModel)]="ingredient.type"
+          Recipe name
+        </tui-input>
+        <app-form-errors-validator
+          [errors]="fetchErrors('name', recipeForm)"
+        ></app-form-errors-validator>
+      </div>
+
+      <ng-container [formGroup]="ingredientForm">
+        <div class="control-size">
+          <tui-input
+            formControlName="name"
+            tuiTextfieldSize="s"
+            type="text"
+            class="input"
+          >
+            Ingredient
+          </tui-input>
+          <app-form-errors-validator
+            [errors]="fetchErrors('name', ingredientForm)"
+          ></app-form-errors-validator>
+        </div>
+
+        <div class="control-size">
+          <div class="flex-controls-sector">
+            <tui-input-number
+              formControlName="amount"
+              tuiTextfieldSize="s"
+              class="small-input"
+              [precision]="2"
+            >
+              Quantity
+            </tui-input-number>
+            <app-form-errors-validator
+              [errors]="fetchErrors('amount', ingredientForm)"
+            ></app-form-errors-validator>
+            <div class="small-space"></div>
+            <tui-select
+              formControlName="type"
+              class="small-input"
+              tuiTextfieldSize="s"
+            >
+              Unit type
+              <input tuiTextfield />
+              <tui-data-list-wrapper
+                *tuiDataList
+                [items]="kitchenMeasures"
+              ></tui-data-list-wrapper>
+            </tui-select>
+            <app-form-errors-validator
+              [errors]="fetchErrors('type', ingredientForm)"
+            ></app-form-errors-validator>
+            <div class="small-space"></div>
+
+            <button
+              appearance="primary"
+              tuiButton
+              class="tui-space_right-3 tui-space_bottom-3"
+              (click)="addAndResetIngredient()"
+              [disabled]="addIngredientValidator()"
+            >
+              Add +
+            </button>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="height-control-size">
+        <tui-textarea formControlName="description" class="input">
+          Description
+        </tui-textarea>
+        <app-form-errors-validator
+          [errors]="fetchErrors('type', recipeForm)"
+        ></app-form-errors-validator>
+      </div>
+
+      <div class="control-size">
+        <tui-input
+          [(ngModel)]="tag"
+          [ngModelOptions]="{ standalone: true }"
+          (ngModelChange)="preventTagRepetiton(tag)"
+          class="input"
+          (keydown.enter)="addTagByEnter()"
         >
-          Unit type
-          <input tuiTextfield />
-          <tui-data-list-wrapper
-            *tuiDataList
-            [items]="kitchenMeasures"
-          ></tui-data-list-wrapper>
-        </tui-select>
-        <div class="small-space"></div>
-        <button
-          [disabled]="
-            !ingredient.name || !ingredient.type || !ingredient.amount
-          "
-          appearance="primary"
-          tuiButton
-          class="tui-space_right-3 tui-space_bottom-3"
-          (click)="addIngredient()"
-        >
-          Add +
-        </button>
+          Tags
+        </tui-input>
+        <tui-tooltip
+          [showDelay]="200"
+          [hideDelay]="100"
+          content="Elementy, które zostaną wprowadzone, mogą być wykorzystane do wyszukiwania na głównej stronie."
+          direction="right"
+          class="tooltop-info"
+        ></tui-tooltip>
+        <div>
+          {{ displayError }}
+        </div>
+      </div>
+      <div class="control-size">
+        <div class="flex-controls-sector">
+          <button
+            appearance="primary"
+            tuiButton
+            type="button"
+            class="tui-space_bottom-3 small-input"
+            (click)="addTag()"
+            [disabled]="disableTagButtonIfEmpty()"
+          >
+            Add tag
+          </button>
+          <div class="small-space"></div>
+          <button
+            appearance="primary"
+            tuiButton
+            type="button"
+            class="tui-space_right-3 tui-space_bottom-3 small-input"
+            (click)="createRecipe()"
+          >
+            Create
+          </button>
+        </div>
       </div>
     </div>
 
-    <div class="height-control-size">
-      <tui-textarea
-        [(ngModel)]="newRecipe.description"
-        (ngModelChange)="refreshChildComponent()"
-        class="input"
-      >
-        Description
-      </tui-textarea>
+    <div class="create-recipe-section-right scrollbar">
+      <app-recipe-preview
+        [choosedRecipe]="wholeForm"
+        [isPreviewMode]="false"
+      ></app-recipe-preview>
     </div>
-
-    <div class="control-size">
-      <tui-input
-        [(ngModel)]="tag"
-        (ngModelChange)="preventTagRepetiton(tag)"
-        class="input"
-        (keydown.enter)="addTagByEnter()"
-      >
-        Tags
-      </tui-input>
-      <tui-tooltip
-        [showDelay]="200"
-        [hideDelay]="100"
-        content="Elementy, które zostaną wprowadzone, mogą być wykorzystane do wyszukiwania na głównej stronie."
-        direction="right"
-        class="tooltop-info"
-      ></tui-tooltip>
-      <div>
-        {{ displayError }}
-      </div>
-    </div>
-
-    <button
-      appearance="primary"
-      tuiButton
-      type="button"
-      class="tui-space_right-3 tui-space_bottom-3"
-      (click)="addTag()"
-      [disabled]="disableTagWhenEmpty()"
-    >
-      Add tag
-    </button>
-
-    <button
-      [disabled]="
-        !newRecipe.name || !newRecipe.ingredients || !newRecipe.description
-      "
-      appearance="primary"
-      tuiButton
-      type="button"
-      class="tui-space_right-3 tui-space_bottom-3"
-      (click)="createRecipe()"
-    >
-      Create
-    </button>
   </div>
-
-  <div class="create-recipe-section-right scrollbar">
-    <app-recipe-preview
-      [choosedRecipe]="newRecipe"
-      [isPreviewMode]="false"
-    ></app-recipe-preview>
-  </div>
-</div>
+</form>

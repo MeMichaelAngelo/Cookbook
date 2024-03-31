@@ -1,4 +1,9 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import { RecipeInterface } from '../interfaces/recipe';
 import { RecipesService } from '../recipes.service';
 import { Subject } from 'rxjs';
@@ -12,13 +17,16 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 })
 export class AllRecipesComponent implements OnInit {
   allRecipes: RecipeInterface[] = [];
-  selectedRecipe: RecipeInterface | null = null;
+  selectedRecipe!: RecipeInterface;
   searchText: string = '';
   searchField: RecipeInterface[] = [];
   private searchTextSubject$ = new Subject<string>();
   destroySubscribe$: Subject<boolean> = new Subject<boolean>();
 
-  constructor(private recipesService: RecipesService) {
+  constructor(
+    private recipesService: RecipesService,
+    private cdr: ChangeDetectorRef
+  ) {
     this.searchTextSubject$.pipe(debounceTime(300)).subscribe(() => {
       this.searchTagOrRecipeName();
     });
@@ -35,6 +43,7 @@ export class AllRecipesComponent implements OnInit {
       .subscribe((data) => {
         this.allRecipes = data;
         this.searchField = this.allRecipes;
+        this.cdr.markForCheck();
       });
   }
 
@@ -44,6 +53,7 @@ export class AllRecipesComponent implements OnInit {
       .pipe(takeUntil(this.destroySubscribe$))
       .subscribe((recipe) => {
         this.selectedRecipe = recipe;
+        this.cdr.markForCheck();
       });
   }
 
@@ -68,6 +78,10 @@ export class AllRecipesComponent implements OnInit {
           tag.toLowerCase().includes(this.searchText.toLowerCase())
         ) || el.name.toLowerCase().includes(this.searchText.toLowerCase())
     );
+  }
+
+  trackById(index: number, item: RecipeInterface): string | RecipeInterface {
+    return item._id || item;
   }
 
   onSearchTextChange(value: string): void {

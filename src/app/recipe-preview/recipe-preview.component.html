@@ -1,5 +1,8 @@
 <div *ngIf="choosedRecipe">
-  <div class="recipe-name">{{ choosedRecipe.name }}</div>
+  <div class="recipe-name">
+    {{ choosedRecipe.name }}
+  </div>
+
   <div class="ingredients-space">
     <div class="headline" *ngIf="choosedRecipe.ingredients.length">
       Ingredients
@@ -27,7 +30,13 @@
   <div class="tags-space">
     <div class="headline" *ngIf="choosedRecipe.tags.length">Tags</div>
     <div class="headline-break">
-      <ng-container *ngFor="let tag of choosedRecipe?.tags; let isLast = last">
+      <ng-container
+        *ngFor="
+          let tag of choosedRecipe?.tags;
+          let isLast = last;
+          trackBy: trackByTags
+        "
+      >
         {{ tag }}{{ !isLast && isPreviewMode ? "," : "" }}
         <span *ngIf="!isPreviewMode">
           <button class="remove-button" (click)="removeTag(tag)">X</button>

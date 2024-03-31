@@ -11,6 +11,7 @@ import { RecipeInterface } from '../interfaces/recipe';
 import { Ingredient } from '../interfaces/ingredient';
 import { Subject, takeUntil } from 'rxjs';
 import { KitchenMeasures } from '../enums/kitchen-measures.enum';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-edit-recipe',
@@ -21,34 +22,27 @@ import { KitchenMeasures } from '../enums/kitchen-measures.enum';
 })
 export class EditRecipeComponent implements OnInit {
   itemId: string = '';
-  tag = '';
+  tag: string = '';
   destroySubscribe$: Subject<boolean> = new Subject<boolean>();
+  displayError: string | null = null;
   kitchenMeasures = Object.values(KitchenMeasures);
-
-  recipe: RecipeInterface = {
-    name: '',
-    ingredients: [],
-    description: '',
-    tags: [],
-  };
+  recipe!: RecipeInterface;
+  recipeForm!: FormGroup;
+  ingredientForm!: FormGroup;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private recipesService: RecipesService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
     this.itemId = this.route.snapshot.params['id'];
+    this.initForms();
     this.getRecipe();
   }
-
-  ingredient: Ingredient = {
-    name: '',
-    amount: null,
-    type: 'g',
-  };
 
   getRecipe() {
     this.recipesService
@@ -56,26 +50,36 @@ export class EditRecipeComponent implements OnInit {
       .pipe(takeUntil(this.destroySubscribe$))
       .subscribe((data) => {
         this.recipe = data;
+        this.recipeForm.patchValue({
+          name: data.name,
+          description: data.description,
+        });
         this.cdr.detectChanges();
       });
   }
 
+  private initForms(): void {
+    this.recipeForm = this.fb.group({
+      name: ['', Validators.required],
+      description: ['', Validators.required],
+      tags: this.fb.array([]),
+    });
+
+    this.ingredientForm = this.fb.group({
+      name: [null, Validators.required],
+      amount: [null, [Validators.required, Validators.min(0.01)]],
+      type: [KitchenMeasures.GRAM, Validators.required],
+    });
+  }
+
   addIngredient(): void {
-    const { name, amount, type } = this.ingredient;
-    const newIngredient = { name, amount, type };
-
-    this.recipe.ingredients.push(newIngredient);
+    this.recipe.ingredients.push(this.ingredientForm.value);
     this.recipe = { ...this.recipe };
-
     this.resetIngredient();
   }
 
   resetIngredient(): void {
-    this.ingredient = {
-      name: '',
-      amount: null,
-      type: 'g',
-    };
+    this.ingredientForm.reset(this.ingredientForm.value);
   }
 
   addTagByEnter(): void {
@@ -84,8 +88,19 @@ export class EditRecipeComponent implements OnInit {
     }
   }
 
-  refreshTextForChild() {
-    return (this.recipe = { ...this.recipe });
+  addTag(): void {
+    this.recipe.tags.push(this.tag);
+    this.recipe = { ...this.recipe };
+    this.tag = '';
+  }
+
+  disableTagButtonIfEmpty(): boolean {
+    return !this.tag.trim() || !!this.displayError;
+  }
+
+  preventTagRepetiton(value: string) {
+    const tag = this.recipe?.tags?.find((el: string) => el === value);
+    this.displayError = tag ? 'Taki tag już istnieje' : null;
   }
 
   removeIngredient(ingredient: Ingredient) {
@@ -98,28 +113,38 @@ export class EditRecipeComponent implements OnInit {
     this.recipe.tags = this.recipe.tags.filter((item) => item !== tag);
   }
 
-  isButtonDisabled(): boolean {
-    return !this.tag.trim();
-  }
-
-  addTag(): void {
-    this.recipe.tags.push(this.tag);
-    this.recipe = { ...this.recipe };
-    this.tag = '';
-  }
-
   handlingOfRecipeTitle(event: KeyboardEvent): void {
     if (event.key !== 'Backspace' && this.recipe.name.length >= 40) {
       event.preventDefault();
     }
   }
 
-  update() {
+  addIngredientValidator(): boolean {
+    return (
+      !this.ingredientForm.value.name ||
+      !this.ingredientForm.value.type ||
+      !this.ingredientForm.value.amount
+    );
+  }
+
+  updateRecipe(): void {
+    if (!this.recipeForm.value || !this.ingredientForm.value) return;
     this.recipesService
       .update(this.itemId, this.recipe)
       .pipe(takeUntil(this.destroySubscribe$))
       .subscribe(() => {
         this.router.navigate(['/']).then();
       });
+  }
+
+  fetchErrors(controlName: string, form: FormGroup): string[] | undefined {
+    const formControl = form.get(controlName);
+    if (!formControl?.touched) return;
+
+    return formControl?.errors ? Object.values(formControl?.errors) : [];
+  }
+
+  ngOnDestroy() {
+    this.destroySubscribe$.unsubscribe();
   }
 }
