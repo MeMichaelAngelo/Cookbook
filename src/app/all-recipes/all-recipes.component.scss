@@ -50,6 +50,12 @@ app-all-recepies {
     tui-input {
       width: 300px;
     }
+
+    @media screen and (max-width: 762px) {
+      display: flex;
+      justify-content: space-evenly;
+      width: 80%;
+    }
   }
 
   .add-recipe-button {
@@ -62,28 +68,10 @@ app-all-recepies {
     overflow: auto;
     margin-top: 6%;
     margin-left: 10%;
-  }
 
-  .title-details {
-    text-align: center;
-  }
-
-  .create-recipe-section-right {
-    width: 720px;
-    margin: 0 auto;
-    margin-top: 6%;
-    max-height: 645px;
-    overflow: auto;
-  }
-
-  .separate-buttons {
-    display: flex;
-    justify-content: space-around;
-  }
-
-  .tui-island {
-    border: 2px solid brown;
-    background-color: initial;
+    @media screen and (min-width: 320px) and (max-width: 480px) {
+      width: 80%;
+    }
   }
 
   .list-of-recipes {
@@ -91,6 +79,61 @@ app-all-recepies {
     border-radius: 20px;
     width: 500px;
     margin-bottom: 20px;
+
+    @media screen and (min-width: 320px) and (max-width: 480px) {
+      width: 90%;
+      background-image: url("../../assets/cutting-board-up-to-screen-width-480.jpg");
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+  }
+
+  .title-details {
+    text-align: center;
+  }
+
+  .separate-buttons {
+    display: flex;
+    justify-content: space-around;
+
+    @media screen and (min-width: 320px) and (max-width: 480px) {
+      display: flex;
+      flex-direction: column;
+
+      button:not(:last-child) {
+        margin-bottom: 20px;
+      }
+    }
+  }
+
+  .disable-background {
+    pointer-events: none;
+  }
+
+  .create-recipe-section-right {
+    position: relative;
+    width: 720px;
+    margin: 0 auto;
+    margin-top: 6%;
+    max-height: 645px;
+    overflow: auto;
+    padding: 0;
+
+    @media screen and (min-width: 320px) and (max-width: 480px) {
+      position: absolute;
+      -webkit-backdrop-filter: blur(5px);
+      backdrop-filter: blur(5px);
+      background-color: rgba(255, 255, 255, 0.5);
+      margin: 50px 5% 0px;
+      width: 90%;
+      height: 90%;
+      border-radius: 30px;
+    }
+  }
+
+  .tui-island {
+    border: 2px solid brown;
+    background-color: initial;
   }
 
   .headline {
@@ -121,10 +164,37 @@ app-all-recepies {
     width: 12px;
     background-color: #fcf1c9;
     border-radius: 10px;
+
+    @media screen and (min-width: 320px) and (max-width: 768px) {
+      width: 0;
+      background-color: transparent;
+    }
   }
+
   .scrollbar::-webkit-scrollbar-thumb {
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color: #d62929;
+
+    @media screen and (min-width: 320px) and (max-width: 768px) {
+      width: 0;
+      background-color: transparent;
+    }
+  }
+
+  .round-close-button {
+    display: none;
+    @media screen and (min-width: 320px) and (max-width: 768px) {
+      display: inline-block;
+      position: absolute;
+      margin: 0 auto;
+      border-radius: 50%;
+      border: 2px solid black;
+      color: black;
+      width: 42px;
+      height: 42px;
+      left: 45%;
+      bottom: 8px;
+    }
   }
 }
