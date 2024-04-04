@@ -1,10 +1,12 @@
 <div class="book-sector">
-  <div class="create-recipe-section-left">
+  <div
+    class="create-recipe-section-left"
+    [ngClass]="{ 'disable-background': selectedRecipe }"
+  >
     <div class="search-and-add-recipe">
-      <tui-input>
+      <tui-input class="search-input">
         Enter recipe name or recipe's tag...
         <input
-          class="search-input"
           (ngModelChange)="onSearchTextChange($event)"
           [(ngModel)]="searchText"
           tuiTextfield
@@ -20,6 +22,7 @@
         + Add recipe
       </button>
     </div>
+
     <div class="recipe-list-sector scrollbar">
       <div class="list-of-recipes" *ngFor="let recipe of searchField">
         <tui-island>
@@ -58,10 +61,18 @@
     </div>
   </div>
 
-  <div class="create-recipe-section-right scrollbar">
+  <div *ngIf="selectedRecipe" class="create-recipe-section-right scrollbar">
     <app-recipe-preview
       [choosedRecipe]="selectedRecipe"
       [isPreviewMode]="true"
     ></app-recipe-preview>
   </div>
+
+  <button
+    *ngIf="selectedRecipe"
+    class="round-close-button"
+    (click)="closeModal()"
+  >
+    X
+  </button>
 </div>

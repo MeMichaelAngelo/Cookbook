@@ -1,4 +1,9 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import { RecipeInterface } from '../interfaces/recipe';
 import { RecipesService } from '../recipes.service';
 import { Subject } from 'rxjs';
@@ -18,9 +23,13 @@ export class AllRecipesComponent implements OnInit {
   private searchTextSubject$ = new Subject<string>();
   destroySubscribe$: Subject<boolean> = new Subject<boolean>();
 
-  constructor(private recipesService: RecipesService) {
+  constructor(
+    private recipesService: RecipesService,
+    private cdr: ChangeDetectorRef
+  ) {
     this.searchTextSubject$.pipe(debounceTime(300)).subscribe(() => {
       this.searchTagOrRecipeName();
+      this.cdr.markForCheck();
     });
   }
 
@@ -35,6 +44,7 @@ export class AllRecipesComponent implements OnInit {
       .subscribe((data) => {
         this.allRecipes = data;
         this.searchField = this.allRecipes;
+        this.cdr.detectChanges();
       });
   }
 
@@ -44,6 +54,7 @@ export class AllRecipesComponent implements OnInit {
       .pipe(takeUntil(this.destroySubscribe$))
       .subscribe((recipe) => {
         this.selectedRecipe = recipe;
+        this.cdr.detectChanges();
       });
   }
 
@@ -72,6 +83,10 @@ export class AllRecipesComponent implements OnInit {
 
   onSearchTextChange(value: string): void {
     this.searchTextSubject$.next(value);
+  }
+
+  closeModal() {
+    this.selectedRecipe = null;
   }
 
   ngOnDestroy() {
