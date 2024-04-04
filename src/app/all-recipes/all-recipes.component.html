@@ -4,10 +4,9 @@
     [ngClass]="{ 'disable-background': selectedRecipe }"
   >
     <div class="search-and-add-recipe">
-      <tui-input>
+      <tui-input class="search-input">
         Enter recipe name or recipe's tag...
         <input
-          class="search-input"
           (ngModelChange)="onSearchTextChange($event)"
           [(ngModel)]="searchText"
           tuiTextfield

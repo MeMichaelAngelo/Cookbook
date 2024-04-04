@@ -29,6 +29,7 @@ export class AllRecipesComponent implements OnInit {
   ) {
     this.searchTextSubject$.pipe(debounceTime(300)).subscribe(() => {
       this.searchTagOrRecipeName();
+      this.cdr.markForCheck();
     });
   }
 
