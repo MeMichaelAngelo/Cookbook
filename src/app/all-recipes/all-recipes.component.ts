@@ -17,7 +17,7 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 })
 export class AllRecipesComponent implements OnInit {
   allRecipes: RecipeInterface[] = [];
-  selectedRecipe!: RecipeInterface;
+  selectedRecipe!: RecipeInterface | null;
   searchText: string = '';
   searchField: RecipeInterface[] = [];
   private searchTextSubject$ = new Subject<string>();
