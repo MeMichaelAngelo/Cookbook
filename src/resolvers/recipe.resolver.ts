@@ -16,7 +16,6 @@ export class RecipeResolver implements Resolve<RecipeInterface> {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<RecipeInterface> {
-    console.log('test resolver', route.params['id']);
     return this.recipeService.fetchRecipeById(route.params['id']);
   }
 }

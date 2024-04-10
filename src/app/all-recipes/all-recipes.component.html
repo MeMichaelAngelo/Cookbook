@@ -24,7 +24,10 @@
     </div>
 
     <div class="recipe-list-sector scrollbar">
-      <div class="list-of-recipes" *ngFor="let recipe of searchField">
+      <div
+        class="list-of-recipes"
+        *ngFor="let recipe of searchField; trackBy: trackById"
+      >
         <tui-island>
           <h3 class="tui-island__title title-details">{{ recipe.name }}</h3>
           <div class="tui-island__paragraph tui-island__paragraph_button">

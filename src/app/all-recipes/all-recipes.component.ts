@@ -17,7 +17,7 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 })
 export class AllRecipesComponent implements OnInit {
   allRecipes: RecipeInterface[] = [];
-  selectedRecipe: RecipeInterface | null = null;
+  selectedRecipe!: RecipeInterface;
   searchText: string = '';
   searchField: RecipeInterface[] = [];
   private searchTextSubject$ = new Subject<string>();
@@ -79,6 +79,10 @@ export class AllRecipesComponent implements OnInit {
           tag.toLowerCase().includes(this.searchText.toLowerCase())
         ) || el.name.toLowerCase().includes(this.searchText.toLowerCase())
     );
+  }
+
+  trackById(index: number, item: RecipeInterface): string | RecipeInterface {
+    return item._id || item;
   }
 
   onSearchTextChange(value: string): void {

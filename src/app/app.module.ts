@@ -31,6 +31,7 @@ import { newLineAsEnterPipe } from './directives/newLineAsEnter.pipe';
 import { RecipePreviewComponent } from './recipe-preview/recipe-preview.component';
 import { RecipeResolver } from 'src/resolvers/recipe.resolver';
 import { MainLayoutComponent } from './main-layout/main-layout.component';
+import { FormErrorsValidatorComponent } from './form-errors-validator/form-errors-validator.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { MainLayoutComponent } from './main-layout/main-layout.component';
     newLineAsEnterPipe,
     RecipePreviewComponent,
     MainLayoutComponent,
+    FormErrorsValidatorComponent,
   ],
   imports: [
     BrowserModule,
