@@ -29,6 +29,7 @@ export class AllRecipesComponent implements OnInit {
   ) {
     this.searchTextSubject$.pipe(debounceTime(300)).subscribe(() => {
       this.searchTagOrRecipeName();
+      this.cdr.markForCheck();
     });
   }
 
@@ -43,7 +44,7 @@ export class AllRecipesComponent implements OnInit {
       .subscribe((data) => {
         this.allRecipes = data;
         this.searchField = this.allRecipes;
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       });
   }
 
@@ -53,7 +54,7 @@ export class AllRecipesComponent implements OnInit {
       .pipe(takeUntil(this.destroySubscribe$))
       .subscribe((recipe) => {
         this.selectedRecipe = recipe;
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       });
   }
 
@@ -86,6 +87,10 @@ export class AllRecipesComponent implements OnInit {
 
   onSearchTextChange(value: string): void {
     this.searchTextSubject$.next(value);
+  }
+
+  closeModal() {
+    this.selectedRecipe = null;
   }
 
   ngOnDestroy() {
