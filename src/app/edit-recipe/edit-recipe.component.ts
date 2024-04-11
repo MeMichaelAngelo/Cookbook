@@ -29,6 +29,7 @@ export class EditRecipeComponent implements OnInit {
   recipe!: RecipeInterface;
   recipeForm!: FormGroup;
   ingredientForm!: FormGroup;
+  mobilePreview: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -72,14 +73,19 @@ export class EditRecipeComponent implements OnInit {
     });
   }
 
-  addIngredient(): void {
+  addAndResetIngredient(): void {
     this.recipe.ingredients.push(this.ingredientForm.value);
     this.recipe = { ...this.recipe };
     this.resetIngredient();
   }
 
-  resetIngredient(): void {
-    this.ingredientForm.reset(this.ingredientForm.value);
+  private resetIngredient(): void {
+    this.ingredientForm?.setValue({
+      name: null,
+      amount: null,
+      type: KitchenMeasures.GRAM,
+    });
+    this.ingredientForm.markAsUntouched();
   }
 
   addTagByEnter(): void {
@@ -142,6 +148,14 @@ export class EditRecipeComponent implements OnInit {
     if (!formControl?.touched) return;
 
     return formControl?.errors ? Object.values(formControl?.errors) : [];
+  }
+
+  openMobilePreview() {
+    this.mobilePreview = true;
+  }
+
+  closeMobilePreview() {
+    this.mobilePreview = false;
   }
 
   ngOnDestroy() {
