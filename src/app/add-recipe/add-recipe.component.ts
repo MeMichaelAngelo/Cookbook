@@ -26,6 +26,7 @@ export class AddRecipeComponent {
   displayError: string | null = null;
   destroySubscribe$: Subject<boolean> = new Subject<boolean>();
   ingredientsArray: Ingredient[] = [];
+  mobilePreview: boolean = false;
 
   get wholeForm(): RecipeInterface {
     return {
@@ -129,6 +130,14 @@ export class AddRecipeComponent {
     if (!formControl?.touched) return;
 
     return formControl?.errors ? Object.values(formControl?.errors) : [];
+  }
+
+  openMobilePreview() {
+    this.mobilePreview = true;
+  }
+
+  closeMobilePreview() {
+    this.mobilePreview = false;
   }
 
   ngOnDestroy() {
