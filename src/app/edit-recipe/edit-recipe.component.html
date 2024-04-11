@@ -1,6 +1,23 @@
 <form [formGroup]="recipeForm">
   <div class="book-sector">
     <div class="create-recipe-section-left">
+      <div class="header">
+        <button
+          class="header-button"
+          appearance="flat"
+          tuiButton
+          routerLink="/"
+        >
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <div class="edit-recipe">Edit recipe</div>
+        <button class="mobile-preview-button" appearance="flat" tuiButton>
+          <i
+            class="fa-solid fa-magnifying-glass"
+            (click)="openMobilePreview()"
+          ></i>
+        </button>
+      </div>
       <div class="control-size">
         <tui-input
           formControlName="name"
@@ -31,8 +48,8 @@
           ></app-form-errors-validator>
         </div>
 
-        <div class="control-size">
-          <div class="flex-controls-sector">
+        <div class="flex-controls-sector">
+          <div class="control-size">
             <tui-input-number
               formControlName="amount"
               tuiTextfieldSize="s"
@@ -44,7 +61,9 @@
             <app-form-errors-validator
               [errors]="fetchErrors('amount', ingredientForm)"
             ></app-form-errors-validator>
-            <div class="small-space"></div>
+          </div>
+          <div class="small-space"></div>
+          <div class="control-size">
             <tui-select
               formControlName="type"
               class="small-input"
@@ -60,19 +79,28 @@
             <app-form-errors-validator
               [errors]="fetchErrors('type', ingredientForm)"
             ></app-form-errors-validator>
-            <div class="small-space"></div>
-            <button
-              appearance="primary"
-              tuiButton
-              class="tui-space_right-3 tui-space_bottom-3"
-              [disabled]="addIngredientValidator()"
-              (click)="addIngredient()"
-            >
-              Add +
-            </button>
           </div>
+          <div class="small-space"></div>
+          <button
+            appearance="primary"
+            tuiButton
+            class="add-ingredient"
+            [disabled]="addIngredientValidator()"
+            (click)="addAndResetIngredient()"
+          >
+            Add +
+          </button>
         </div>
       </ng-container>
+      <button
+        appearance="primary"
+        class="add-ingredient-mobile"
+        tuiButton
+        (click)="addAndResetIngredient()"
+        [disabled]="addIngredientValidator()"
+      >
+        Add +
+      </button>
 
       <div class="height-control-size">
         <tui-textarea formControlName="description" class="input">
@@ -83,7 +111,7 @@
         ></app-form-errors-validator>
       </div>
 
-      <div class="control-size">
+      <div class="control-size tag">
         <tui-input
           [(ngModel)]="tag"
           [ngModelOptions]="{ standalone: true }"
@@ -96,32 +124,35 @@
         <tui-tooltip
           [showDelay]="200"
           [hideDelay]="100"
-          content="Elementy, które zostaną wprowadzone, mogą być wykorzystane do wyszukiwania na głównej stronie."
+          content="Hasła, które zostaną tutaj wprowadzone, mogą być wykorzystane do wyszukiwania na głównej stronie."
           direction="right"
-          class="tooltop-info"
+          class="tooltip-info"
         ></tui-tooltip>
         <div>
           {{ displayError }}
         </div>
       </div>
-      <div class="control-size">
-        <div class="flex-controls-sector">
+
+      <div class="flex-controls-sector">
+        <div class="control-size">
           <button
             appearance="primary"
             tuiButton
             type="button"
-            class="tui-space_bottom-3 small-input"
+            class="small-input"
             (click)="addTag()"
             [disabled]="disableTagButtonIfEmpty()"
           >
             Add tag
           </button>
-          <div class="small-space"></div>
+        </div>
+        <div class="small-space"></div>
+        <div class="control-size">
           <button
             appearance="primary"
             tuiButton
             type="button"
-            class="tui-space_right-3 tui-space_bottom-3 small-input"
+            class="small-input"
             (click)="updateRecipe()"
           >
             Update
@@ -135,5 +166,20 @@
         [isPreviewMode]="false"
       ></app-recipe-preview>
     </div>
+
+    <div *ngIf="mobilePreview" class="mobile-preview">
+      <app-recipe-preview
+        [choosedRecipe]="recipe"
+        [isPreviewMode]="false"
+      ></app-recipe-preview>
+    </div>
   </div>
+
+  <button
+    *ngIf="mobilePreview"
+    class="round-close-button"
+    (click)="closeMobilePreview()"
+  >
+    X
+  </button>
 </form>
