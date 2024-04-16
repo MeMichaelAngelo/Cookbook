@@ -36,14 +36,21 @@ app-all-recepies {
     display: flex;
   }
 
-  .recipe-list-sector {
-    max-height: 550px;
+  .create-recipe-section-left {
+    width: 600px;
     margin: 0 auto;
     overflow: auto;
+    margin-top: 6%;
+    margin-left: 10%;
 
     @media screen and (min-width: 320px) and (max-width: 480px) {
-      max-height: 500px;
+      margin: 8% 10% 0;
+      width: 80%;
     }
+  }
+
+  .disable-background {
+    pointer-events: none;
   }
 
   .search-and-add-recipe {
@@ -59,14 +66,24 @@ app-all-recepies {
       width: 80%;
       margin: 0 auto 20px;
       tui-input {
-        width: auto;
+        width: 100%;
       }
+    }
+  }
+
+  .recipe-list-sector {
+    max-height: 550px;
+    margin: 0 auto;
+    overflow: auto;
+
+    @media screen and (min-width: 320px) and (max-width: 480px) {
+      max-height: 500px;
     }
   }
 
   .search-input {
     @media screen and (min-width: 320px) and (max-width: 480px) {
-      margin: 0 20px 20px;
+      margin: 0 0 20px;
     }
   }
 
@@ -74,20 +91,7 @@ app-all-recepies {
     margin-left: 20px;
 
     @media screen and (min-width: 320px) and (max-width: 480px) {
-      margin: 0 20px;
-    }
-  }
-
-  .create-recipe-section-left {
-    width: 600px;
-    margin: 0 auto;
-    overflow: auto;
-    margin-top: 6%;
-    margin-left: 10%;
-
-    @media screen and (min-width: 320px) and (max-width: 480px) {
-      margin: 8% 10% 0;
-      width: 80%;
+      margin: 0;
     }
   }
 
@@ -101,10 +105,14 @@ app-all-recepies {
       width: 100%;
       background-image: url("../../assets/cutting-board-up-to-screen-width-480.jpg");
       background-repeat: no-repeat;
-      background-size: cover;
+      background-size: 100% 100%;
     }
   }
 
+  .tui-island {
+    border: 2px solid brown;
+    background-color: initial;
+  }
   .title-details {
     text-align: center;
   }
@@ -123,9 +131,7 @@ app-all-recepies {
     }
   }
 
-  .disable-background {
-    pointer-events: none;
-  }
+  //********************************************************************
 
   .create-recipe-section-right {
     position: relative;
@@ -146,35 +152,6 @@ app-all-recepies {
       height: 90%;
       border-radius: 30px;
     }
-  }
-
-  .tui-island {
-    border: 2px solid brown;
-    background-color: initial;
-  }
-
-  .headline {
-    font-weight: bold;
-    padding-bottom: 15px;
-  }
-
-  .headline-break {
-    line-height: 1.2;
-  }
-
-  .recipe-name {
-    font-family: "Courgette-Regular";
-    font-size: 42px;
-    padding-top: 10px;
-    padding-bottom: 30px;
-    text-align: center;
-  }
-
-  .ingredients-space {
-    font-family: "Courgette-Regular";
-    font-size: 24px;
-    padding-top: 18px;
-    padding-bottom: 30px;
   }
 
   .scrollbar::-webkit-scrollbar {
