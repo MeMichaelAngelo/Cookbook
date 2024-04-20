@@ -4,8 +4,12 @@ app-main-layout {
     width: 100%;
     background-image: url("../../assets/opened-book.png");
     background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-attachment: scroll;
     background-position: center center;
     height: 100vh;
+
+    @media screen and (min-width: 320px) and (max-width: 480px) {
+      overflow: auto;
+    }
   }
 }
