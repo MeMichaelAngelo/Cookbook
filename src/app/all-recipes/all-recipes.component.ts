@@ -22,6 +22,9 @@ export class AllRecipesComponent implements OnInit {
   searchField: RecipeInterface[] = [];
   private searchTextSubject$ = new Subject<string>();
   destroySubscribe$: Subject<boolean> = new Subject<boolean>();
+  recipesForPagination: RecipeInterface[] = [];
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
 
   constructor(
     private recipesService: RecipesService,
@@ -35,6 +38,7 @@ export class AllRecipesComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllRecipes();
+    this.fetchAllRecipesForPagination();
   }
 
   getAllRecipes(): void {
@@ -46,6 +50,32 @@ export class AllRecipesComponent implements OnInit {
         this.searchField = this.allRecipes;
         this.cdr.detectChanges();
       });
+  }
+
+  fetchAllRecipesForPagination() {
+    this.recipesService
+      .getRecipesForPagination(
+        this.currentPage,
+        this.itemsPerPage,
+        this.searchText
+      )
+      .pipe(takeUntil(this.destroySubscribe$))
+      .subscribe((recipes) => {
+        this.recipesForPagination = recipes;
+        this.cdr.detectChanges();
+      });
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage -= 1;
+      this.fetchAllRecipesForPagination();
+    }
+  }
+
+  nextPage(): void {
+    this.currentPage += 1;
+    this.fetchAllRecipesForPagination();
   }
 
   displayRecipePreview(recipe: RecipeInterface) {
@@ -70,10 +100,9 @@ export class AllRecipesComponent implements OnInit {
 
   searchTagOrRecipeName(): void {
     if (!this.searchText) {
-      this.searchField = this.allRecipes;
       return;
     }
-    this.searchField = this.allRecipes.filter(
+    this.recipesForPagination = this.allRecipes.filter(
       (el) =>
         el.tags.some((tag) =>
           tag.toLowerCase().includes(this.searchText.toLowerCase())
