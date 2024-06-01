@@ -26,6 +26,7 @@ import {
   TuiIslandModule,
   TuiInputNumberModule,
 } from '@taiga-ui/kit';
+import { TuiTablePaginationModule } from '@taiga-ui/addon-table';
 
 import { newLineAsEnterPipe } from './directives/newLineAsEnter.pipe';
 import { RecipePreviewComponent } from './recipe-preview/recipe-preview.component';
@@ -64,6 +65,7 @@ import { FormErrorsValidatorComponent } from './form-errors-validator/form-error
     TuiTextareaModule,
     TuiIslandModule,
     TuiInputNumberModule,
+    TuiTablePaginationModule,
   ],
   providers: [RecipeResolver],
   bootstrap: [AppComponent],

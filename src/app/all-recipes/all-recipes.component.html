@@ -61,8 +61,13 @@
           </div>
         </tui-island>
       </div>
-      <button (click)="previousPage()">Poprzednia strona</button>
-      <button (click)="nextPage()">Następna strona</button>
+    </div>
+    <div class="pagination">
+      <tui-table-pagination
+        [total]="allRecipes.length"
+        [items]="[10]"
+        (paginationChange)="paginationStepControl($event)"
+      ></tui-table-pagination>
     </div>
   </div>
 

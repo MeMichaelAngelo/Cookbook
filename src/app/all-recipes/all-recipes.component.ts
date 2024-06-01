@@ -3,16 +3,27 @@ import {
   Component,
   OnInit,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { RecipeInterface } from '../interfaces/recipe';
 import { RecipesService } from '../recipes.service';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
+import {
+  TuiTablePagination,
+  tuiTablePaginationOptionsProvider,
+} from '@taiga-ui/addon-table';
 
 @Component({
   selector: 'app-all-recepies',
   templateUrl: './all-recipes.component.html',
   styleUrls: ['./all-recipes.component.scss'],
+  providers: [
+    tuiTablePaginationOptionsProvider({
+      showPages: false,
+    }),
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
 export class AllRecipesComponent implements OnInit {
@@ -25,6 +36,7 @@ export class AllRecipesComponent implements OnInit {
   recipesForPagination: RecipeInterface[] = [];
   currentPage: number = 1;
   itemsPerPage: number = 10;
+  numberOfCases: number[] = [];
 
   constructor(
     private recipesService: RecipesService,
@@ -66,15 +78,8 @@ export class AllRecipesComponent implements OnInit {
       });
   }
 
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage -= 1;
-      this.fetchAllRecipesForPagination();
-    }
-  }
-
-  nextPage(): void {
-    this.currentPage += 1;
+  paginationStepControl(event: TuiTablePagination) {
+    this.currentPage = event.page + 1;
     this.fetchAllRecipesForPagination();
   }
 
