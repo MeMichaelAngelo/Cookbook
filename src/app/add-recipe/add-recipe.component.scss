@@ -13,7 +13,7 @@ app-add-recipe {
     margin: 0 auto;
     overflow: auto;
     margin-top: 6%;
-    margin-left: 12%;
+    margin-left: 5%;
 
     @media screen and (min-width: 320px) and (max-width: 480px) {
       margin: 8% 10% 0;
@@ -37,6 +37,15 @@ app-add-recipe {
 
   .header-button {
     width: 30%;
+  }
+
+  .create-recipe {
+    font-size: 34px;
+    font-family: "Courgette-Regular";
+    text-align: center;
+    text-wrap: wrap;
+    line-height: 36px;
+    margin-left: 9%;
   }
 
   .mobile-preview-button {
@@ -138,14 +147,6 @@ app-add-recipe {
     width: 100%;
     margin-bottom: 20px;
     align-items: center;
-  }
-
-  .create-recipe {
-    font-size: 34px;
-    font-family: "Courgette-Regular";
-    text-align: center;
-    text-wrap: wrap;
-    line-height: 36px;
   }
 
   .flex-controls-sector {
