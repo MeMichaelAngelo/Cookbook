@@ -36,7 +36,6 @@ export class AllRecipesComponent implements OnInit {
   recipesForPagination: RecipeInterface[] = [];
   currentPage: number = 1;
   itemsPerPage: number = 10;
-  numberOfCases: number[] = [];
 
   constructor(
     private recipesService: RecipesService,
