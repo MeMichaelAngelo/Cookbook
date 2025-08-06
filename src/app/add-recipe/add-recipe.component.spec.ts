@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AddRecipeComponent } from './add-recipe.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { KitchenMeasures } from '../enums/kitchen-measures.enum';
 
 describe('AppComponent', () => {
   let component: AddRecipeComponent;
@@ -58,6 +59,40 @@ describe('AppComponent', () => {
       expect(ingredientForm.controls['name'].value).toBeFalse();
       expect(ingredientForm.controls['amount'].value).toBeFalse();
       expect(ingredientForm.controls['type'].value).toBeFalse();
+    });
+  });
+
+  describe('Testing methods', () => {
+    it('addIngredientValidator - should return true if ingredients form is invalid', () => {
+      component.ingredientForm.setValue({
+        name: null,
+        amount: null,
+        type: KitchenMeasures.DECAGRAM,
+      });
+      expect(component.addIngredientValidator()).toBeTrue();
+    });
+
+    it('addAndResetIngredient - should add ingredient and reset fields', () => {
+      component.ingredientForm.setValue({
+        name: 'Bread',
+        amount: 600,
+        type: KitchenMeasures.GRAM,
+      });
+      component.addAndResetIngredient();
+      fixture.detectChanges();
+
+      expect(component.ingredientsArray.length).toBe(1);
+      expect(component.ingredientsArray[0].name).toBe('Bread');
+      expect(component.ingredientForm.value.name).toBeNull();
+    });
+
+    it('disableTagButtonIfEmpty - should disable tag button when tag is empty or error exists', () => {
+      component.tag = '   ';
+      expect(component.disableTagButtonIfEmpty()).toBeTrue();
+
+      component.tag = 'Test';
+      component.displayError = 'Error';
+      expect(component.disableTagButtonIfEmpty()).toBeTrue();
     });
   });
 });
