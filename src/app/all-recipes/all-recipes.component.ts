@@ -3,16 +3,27 @@ import {
   Component,
   OnInit,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { RecipeInterface } from '../interfaces/recipe';
 import { RecipesService } from '../recipes.service';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
+import {
+  TuiTablePagination,
+  tuiTablePaginationOptionsProvider,
+} from '@taiga-ui/addon-table';
 
 @Component({
   selector: 'app-all-recepies',
   templateUrl: './all-recipes.component.html',
   styleUrls: ['./all-recipes.component.scss'],
+  providers: [
+    tuiTablePaginationOptionsProvider({
+      showPages: false,
+    }),
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
 export class AllRecipesComponent implements OnInit {
@@ -22,6 +33,9 @@ export class AllRecipesComponent implements OnInit {
   searchField: RecipeInterface[] = [];
   private searchTextSubject$ = new Subject<string>();
   destroySubscribe$: Subject<boolean> = new Subject<boolean>();
+  recipesForPagination: RecipeInterface[] = [];
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
 
   constructor(
     private recipesService: RecipesService,
@@ -35,6 +49,7 @@ export class AllRecipesComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllRecipes();
+    this.fetchAllRecipesForPagination();
   }
 
   getAllRecipes(): void {
@@ -46,6 +61,25 @@ export class AllRecipesComponent implements OnInit {
         this.searchField = this.allRecipes;
         this.cdr.detectChanges();
       });
+  }
+
+  fetchAllRecipesForPagination() {
+    this.recipesService
+      .getRecipesForPagination(
+        this.currentPage,
+        this.itemsPerPage,
+        this.searchText
+      )
+      .pipe(takeUntil(this.destroySubscribe$))
+      .subscribe((recipes) => {
+        this.recipesForPagination = recipes;
+        this.cdr.detectChanges();
+      });
+  }
+
+  paginationStepControl(event: TuiTablePagination) {
+    this.currentPage = event.page + 1;
+    this.fetchAllRecipesForPagination();
   }
 
   displayRecipePreview(recipe: RecipeInterface) {
@@ -70,10 +104,9 @@ export class AllRecipesComponent implements OnInit {
 
   searchTagOrRecipeName(): void {
     if (!this.searchText) {
-      this.searchField = this.allRecipes;
       return;
     }
-    this.searchField = this.allRecipes.filter(
+    this.recipesForPagination = this.allRecipes.filter(
       (el) =>
         el.tags.some((tag) =>
           tag.toLowerCase().includes(this.searchText.toLowerCase())

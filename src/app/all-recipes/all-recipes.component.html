@@ -26,7 +26,7 @@
     <div class="recipe-list-sector scrollbar">
       <div
         class="list-of-recipes"
-        *ngFor="let recipe of searchField; trackBy: trackById"
+        *ngFor="let recipe of recipesForPagination; trackBy: trackById"
       >
         <tui-island>
           <h3 class="tui-island__title title-details">{{ recipe.name }}</h3>
@@ -61,6 +61,13 @@
           </div>
         </tui-island>
       </div>
+    </div>
+    <div class="pagination">
+      <tui-table-pagination
+        [total]="allRecipes.length"
+        [items]="[10]"
+        (paginationChange)="paginationStepControl($event)"
+      ></tui-table-pagination>
     </div>
   </div>
 

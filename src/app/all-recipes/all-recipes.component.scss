@@ -49,8 +49,10 @@ app-all-recepies {
     }
   }
 
-  .disable-background {
-    pointer-events: none;
+  @media screen and (min-width: 320px) and (max-width: 480px) {
+    .disable-background {
+      pointer-events: none;
+    }
   }
 
   .search-and-add-recipe {
@@ -129,6 +131,22 @@ app-all-recepies {
         margin-bottom: 20px;
       }
     }
+  }
+
+  .pagination {
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  tui-table-pagination {
+    span:nth-child(2) {
+      font-size: 20px;
+    }
+  }
+
+  [_nghost-ng-c3120099305] {
+    color: #000000;
+    align-items: normal;
   }
 
   //********************************************************************
