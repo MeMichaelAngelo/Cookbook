@@ -3,19 +3,35 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AddRecipeComponent } from './add-recipe.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { KitchenMeasures } from '../enums/kitchen-measures.enum';
+import { RecipesService } from '../recipes.service';
+import { of } from 'rxjs';
+import { Router } from '@angular/router';
 
-describe('AppComponent', () => {
+describe('AddRecipeComponent', () => {
   let component: AddRecipeComponent;
   let fixture: ComponentFixture<AddRecipeComponent>;
+  let recipesServiceSpy: jasmine.SpyObj<RecipesService>;
+  let routerSpy: jasmine.SpyObj<Router>;
 
   beforeEach(async () => {
+    const recipesSpy = jasmine.createSpyObj('RecipesService', ['createRecipe']);
+    const routerMock = jasmine.createSpyObj('Router', ['navigate']);
+
     await TestBed.configureTestingModule({
       imports: [RouterTestingModule, ReactiveFormsModule],
       declarations: [AddRecipeComponent],
+      providers: [
+        { provide: RecipesService, useValue: recipesSpy },
+        { provide: Router, useValue: routerMock },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddRecipeComponent);
     component = fixture.componentInstance;
+    recipesServiceSpy = TestBed.inject(
+      RecipesService
+    ) as jasmine.SpyObj<RecipesService>;
+    routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
     fixture.detectChanges();
     component.ngOnInit();
   });
@@ -94,5 +110,46 @@ describe('AppComponent', () => {
       component.displayError = 'Error';
       expect(component.disableTagButtonIfEmpty()).toBeTrue();
     });
+
+    it('addTag - method push tag to tag array and reset tag control', () => {
+      component.tag = 'New tag';
+      component.recipeForm.get('tags')?.setValue([]);
+
+      component.addTag();
+
+      const tagsArray = component.recipeForm.get('tags')?.value;
+      expect(tagsArray).toContain('New tag');
+      expect(component.tag).toBe('');
+    });
+
+    it('createRecipe - should not call method if form is invalid', () => {
+      component.recipeForm.get('name')?.setValue('');
+      component.createRecipe();
+      expect(recipesServiceSpy.createRecipe).not.toHaveBeenCalled();
+
+      component.recipeForm.get('name')?.setValue('Dumplings');
+      component.recipeForm.get('description')?.setValue('Are very delicious');
+      expect(recipesServiceSpy.createRecipe).not.toHaveBeenCalled();
+
+      component.ingredientsArray.length = 0;
+      expect(recipesServiceSpy.createRecipe).not.toHaveBeenCalled();
+    });
+  });
+
+  it('createRecipe - successed created recipe and navigate to next page', () => {
+    component.recipeForm.get('name')?.setValue('Cake');
+    component.recipeForm
+      .get('description')
+      ?.setValue('Who want one more piece?');
+    component.ingredientsArray = [
+      { name: 'Flour', amount: '600', type: KitchenMeasures.GRAM },
+    ];
+    //Check what's wrong with of({})
+    //recipesServiceSpy.createRecipe.and.returnValue(of({}));
+
+    component.createRecipe();
+
+    expect(recipesServiceSpy.createRecipe).toHaveBeenCalled();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
   });
 });
