@@ -152,4 +152,38 @@ describe('AddRecipeComponent', () => {
     expect(recipesServiceSpy.createRecipe).toHaveBeenCalled();
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
   });
+
+  it('recipeNameValidation - block typing recipe name if it is longer than 40 characters', () => {
+    const longName = 'a'.repeat(40);
+    component.recipeForm.get('name')?.setValue(longName);
+
+    const event = new KeyboardEvent('keydown', { key: 'a' });
+    spyOn(event, 'preventDefault');
+
+    component.recipeNameValidation(event);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+  });
+
+  it('preventTagRepetiton - show error if tag is already added', () => {
+    const tags = ['Vegan', 'Quick'];
+    component.recipeForm.get('tags')?.setValue(tags);
+
+    component.preventTagRepetiton('Quick');
+
+    expect(component.displayError).toBe('This tag already exists');
+  });
+
+  it('preventTagRepetiton - clear error if tag is new', () => {
+    component.recipeForm.get('tags')?.setValue(['Easy']);
+    component.preventTagRepetiton('New');
+
+    expect(component.displayError).toBeNull();
+  });
+
+  it('ngOnDestroy - unsubscribe on destroy', () => {
+    const destroySpy = spyOn(component['destroySubscribe$'], 'unsubscribe');
+    component.ngOnDestroy();
+    expect(destroySpy).toHaveBeenCalled();
+  });
 });
