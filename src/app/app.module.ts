@@ -5,7 +5,7 @@ import {
   TuiHintModule,
 } from '@taiga-ui/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -67,6 +67,7 @@ import { FormErrorsValidatorComponent } from './form-errors-validator/form-error
     TuiInputNumberModule,
     TuiTablePaginationModule,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [RecipeResolver],
   bootstrap: [AppComponent],
 })
