@@ -1,4 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AddRecipeComponent } from './add-recipe.component';
 import {
@@ -12,38 +17,39 @@ import { RecipesService } from '../recipes.service';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RecipeInterface } from '../interfaces/recipe';
 import { AppModule } from '../app.module';
-import { tuiObjectFromEntries } from '@taiga-ui/cdk';
+import { AllRecipesComponent } from '../all-recipes/all-recipes.component';
+import { routes } from '../app-routing.module';
+import { Location } from '@angular/common';
 
 describe('AddRecipeComponent', () => {
   let component: AddRecipeComponent;
   let fixture: ComponentFixture<AddRecipeComponent>;
-  let recipesServiceSpy: jasmine.SpyObj<RecipesService>;
-  let routerSpy: jasmine.SpyObj<Router>;
+  let serviceSpy: jasmine.SpyObj<RecipesService>;
+  let router: Router;
+  let location: Location;
 
   beforeEach(async () => {
-    // const recipesSpy = jasmine.createSpyObj('RecipesService', ['createRecipe']);
-    // const routerMock = jasmine.createSpyObj('Router', ['navigate']);
+    const servSpy = jasmine.createSpyObj('RecipesService', ['createRecipe']);
 
     await TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
         FormsModule,
         ReactiveFormsModule,
         HttpClientTestingModule,
         AppModule,
+        RouterTestingModule.withRoutes(routes),
       ],
-      declarations: [AddRecipeComponent],
-      // providers: [
-      //   { provide: RecipesService, useValue: recipesSpy },
-      //   { provide: Router, useValue: routerMock },
-      // ],
+      declarations: [AddRecipeComponent, AllRecipesComponent],
+      providers: [{ provide: RecipesService, useValue: servSpy }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddRecipeComponent);
     component = fixture.componentInstance;
-    //recipesServiceSpy = TestBed.inject(RecipesService) as jasmine.SpyObj<RecipesService>;
-    //routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    router = TestBed.inject(Router);
+    location = TestBed.inject(Location);
+    router.initialNavigation();
 
     component.ngOnInit();
     fixture.detectChanges();
@@ -148,68 +154,100 @@ describe('AddRecipeComponent', () => {
       expect(component.tag).toBe('');
     });
 
-    //   it('createRecipe - should not call method if form is invalid', () => {
-    //     component.recipeForm.get('name')?.setValue('');
-    //     component.createRecipe();
-    //     expect(recipesServiceSpy.createRecipe).not.toHaveBeenCalled();
+    it('preventTagRepetiton - clear error if tag is new', () => {
+      const tags = component.recipeForm.get('tags') as FormArray;
+      tags.push(new FormControl('Easy'));
+      component.preventTagRepetiton('New');
 
-    //     component.recipeForm.get('name')?.setValue('Dumplings');
-    //     component.recipeForm.get('description')?.setValue('Are very delicious');
-    //     expect(recipesServiceSpy.createRecipe).not.toHaveBeenCalled();
+      expect(component.displayError).toBeNull();
+    });
 
-    //     component.ingredientsArray.length = 0;
-    //     expect(recipesServiceSpy.createRecipe).not.toHaveBeenCalled();
-    //   });
+    it('recipeNameValidation - block typing recipe name if it is longer than 40 characters', () => {
+      const longName = 'a'.repeat(40);
+      component.recipeForm.get('name')?.setValue(longName);
 
-    //   it('createRecipe - successed created recipe and navigate to next page', () => {
-    //     component.recipeForm.get('name')?.setValue('Cake');
-    //     component.recipeForm
-    //       .get('description')
-    //       ?.setValue('Who want one more piece?');
-    //     component.ingredientsArray = [
-    //       { name: 'Flour', amount: '600', type: KitchenMeasures.GRAM },
-    //     ];
-    //     //Check what's wrong with of({})
-    //     //recipesServiceSpy.createRecipe.and.returnValue(of({}));
+      const event = new KeyboardEvent('keydown', { key: 'a' });
+      spyOn(event, 'preventDefault');
+      component.recipeNameValidation(event);
 
-    //     component.createRecipe();
+      expect(event.preventDefault).toHaveBeenCalled();
+    });
 
-    //     expect(recipesServiceSpy.createRecipe).toHaveBeenCalled();
-    //     expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
-    //   });
+    it('preventTagRepetiton - show error if tag is already added', () => {
+      const tags = component.recipeForm.get('tags') as FormArray;
+      tags.push(new FormControl('Vegan'));
+      tags.push(new FormControl('Quick'));
+      component.preventTagRepetiton('Quick');
 
-    //   it('recipeNameValidation - block typing recipe name if it is longer than 40 characters', () => {
-    //     const longName = 'a'.repeat(40);
-    //     component.recipeForm.get('name')?.setValue(longName);
+      expect(component.displayError).toBe('Taki tag już istnieje');
+    });
 
-    //     const event = new KeyboardEvent('keydown', { key: 'a' });
-    //     spyOn(event, 'preventDefault');
+    it('ngOnDestroy - unsubscribe on destroy', () => {
+      const destroySpy = spyOn(component['destroySubscribe$'], 'unsubscribe');
+      component.ngOnDestroy();
+      fixture.detectChanges();
+      expect(destroySpy).toHaveBeenCalled();
+    });
+  });
 
-    //     component.recipeNameValidation(event);
+  describe('Service tests', () => {
+    it('createRecipe - should not call method if form is invalid', () => {
+      serviceSpy = TestBed.inject(
+        RecipesService
+      ) as jasmine.SpyObj<RecipesService>; // teraz to działa (dodanie "as jasmine.SpyObj<RecipesService>;")
 
-    //     expect(event.preventDefault).toHaveBeenCalled();
-    //   });
+      component.recipeForm.get('name')?.setValue('');
+      fixture.detectChanges();
+      component.createRecipe();
+      expect(component.recipeForm?.status).toBe('INVALID');
+      expect(serviceSpy.createRecipe).not.toHaveBeenCalled();
 
-    //   it('preventTagRepetiton - show error if tag is already added', () => {
-    //     const tags = ['Vegan', 'Quick'];
-    //     component.recipeForm.get('tags')?.setValue(tags);
+      component.recipeForm.get('name')?.setValue('Dumplings');
+      component.recipeForm.get('description')?.setValue('Are very delicious');
+      expect(serviceSpy.createRecipe).not.toHaveBeenCalled();
 
-    //     component.preventTagRepetiton('Quick');
+      component.ingredientsArray.length = 0;
+      expect(serviceSpy.createRecipe).not.toHaveBeenCalled();
+    });
 
-    //     expect(component.displayError).toBe('This tag already exists');
-    //   });
+    it('createRecipe - successed created recipe and navigate to next page', fakeAsync(() => {
+      //fakeAsync - używane do obsługi route, który jest asynchroniczny!
+      //Część serwisu
+      //symulowanie danych na podstawie przyjmowanego typu w metodzie (interfejsu RecipeInterface)
+      const mockData: RecipeInterface = {
+        name: 'Soup',
+        ingredients: [
+          {
+            name: 'water',
+            amount: '3',
+            type: KitchenMeasures.LITER,
+          },
+        ],
+        description: 'Best soup',
+        tags: [],
+      };
+      serviceSpy = TestBed.inject(
+        RecipesService
+      ) as jasmine.SpyObj<RecipesService>;
+      //zasymulowanie użycia metody po stronie serwisu wraz z danymi
+      serviceSpy.createRecipe.and.returnValue(of(mockData));
+      //Część komponentu
+      //zasymulowanie formularza z wprowadzonymi danymi
+      component.recipeForm.setValue({
+        name: 'Soup',
+        description: 'Best soup',
+        tags: [],
+      });
 
-    //   it('preventTagRepetiton - clear error if tag is new', () => {
-    //     component.recipeForm.get('tags')?.setValue(['Easy']);
-    //     component.preventTagRepetiton('New');
+      component.ingredientsArray = mockData.ingredients;
+      //Przygotowanie routera pod testy
+      router.navigate(['']);
+      tick(); //wykonuje akcje asynchroniczne natychmiast - takie metody nie muszą czekać do końca na ich wykonanie
+      //Symulacja kliknięcia createRecipe() z "wprowadzonymi" wcześniej danymi
+      component.createRecipe();
 
-    //     expect(component.displayError).toBeNull();
-    //   });
-
-    //   it('ngOnDestroy - unsubscribe on destroy', () => {
-    //     const destroySpy = spyOn(component['destroySubscribe$'], 'unsubscribe');
-    //     component.ngOnDestroy();
-    //     expect(destroySpy).toHaveBeenCalled();
-    //   });
+      expect(serviceSpy.createRecipe).toHaveBeenCalled();
+      expect(location.path()).toBe('/'); //path() sprowadza ścieżkę '' do ścieżki '/'
+    }));
   });
 });
