@@ -29,6 +29,7 @@ export class RecipesService {
   }
 
   createRecipe(newRecipe: RecipeInterface) {
+    console.log(newRecipe);
     return this.http.post<RecipeInterface>(
       'http://localhost:3000/recipe',
       newRecipe
