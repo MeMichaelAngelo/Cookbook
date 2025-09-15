@@ -139,7 +139,7 @@ export class EditRecipeComponent implements OnInit {
       .update(this.itemId, this.recipe)
       .pipe(takeUntil(this.destroySubscribe$))
       .subscribe(() => {
-        this.router.navigate(['/']).then();
+        this.router.navigate(['']).then();
       });
   }
 

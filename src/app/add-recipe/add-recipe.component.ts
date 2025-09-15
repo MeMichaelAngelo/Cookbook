@@ -96,17 +96,19 @@ export class AddRecipeComponent {
   }
 
   createRecipe(): void {
-    if (this.recipeForm.valid && this.ingredientsArray.length > 0) {
-      this.recipesService
-        .createRecipe({
-          ...this.recipeForm.value,
-          ingredients: [...this.ingredientsArray],
-        })
-        .pipe(takeUntil(this.destroySubscribe$))
-        .subscribe(() => {
-          this.router.navigate(['/']);
-        });
+    if (!this.recipeForm.valid && this.ingredientsArray.length === 0) {
+      return;
     }
+
+    this.recipesService
+      .createRecipe({
+        ...this.recipeForm.value,
+        ingredients: [...this.ingredientsArray],
+      })
+      .pipe(takeUntil(this.destroySubscribe$))
+      .subscribe(() => {
+        this.router.navigate(['']);
+      });
   }
 
   recipeNameValidation(event: KeyboardEvent): void {
