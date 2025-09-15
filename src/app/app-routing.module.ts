@@ -5,7 +5,7 @@ import { AddRecipeComponent } from './add-recipe/add-recipe.component';
 import { EditRecipeComponent } from './edit-recipe/edit-recipe.component';
 import { RecipeResolver } from 'src/resolvers/recipe.resolver';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: AllRecipesComponent,
