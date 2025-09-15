@@ -194,7 +194,7 @@ describe('AddRecipeComponent', () => {
     it('createRecipe - should not call method if form is invalid', () => {
       serviceSpy = TestBed.inject(
         RecipesService
-      ) as jasmine.SpyObj<RecipesService>; // teraz to działa (dodanie "as jasmine.SpyObj<RecipesService>;")
+      ) as jasmine.SpyObj<RecipesService>;
 
       component.recipeForm.get('name')?.setValue('');
       fixture.detectChanges();
@@ -211,9 +211,6 @@ describe('AddRecipeComponent', () => {
     });
 
     it('createRecipe - successed created recipe and navigate to next page', fakeAsync(() => {
-      //fakeAsync - używane do obsługi route, który jest asynchroniczny!
-      //Część serwisu
-      //symulowanie danych na podstawie przyjmowanego typu w metodzie (interfejsu RecipeInterface)
       const mockData: RecipeInterface = {
         name: 'Soup',
         ingredients: [
@@ -229,25 +226,19 @@ describe('AddRecipeComponent', () => {
       serviceSpy = TestBed.inject(
         RecipesService
       ) as jasmine.SpyObj<RecipesService>;
-      //zasymulowanie użycia metody po stronie serwisu wraz z danymi
       serviceSpy.createRecipe.and.returnValue(of(mockData));
-      //Część komponentu
-      //zasymulowanie formularza z wprowadzonymi danymi
       component.recipeForm.setValue({
         name: 'Soup',
         description: 'Best soup',
         tags: [],
       });
-
       component.ingredientsArray = mockData.ingredients;
-      //Przygotowanie routera pod testy
       router.navigate(['']);
-      tick(); //wykonuje akcje asynchroniczne natychmiast - takie metody nie muszą czekać do końca na ich wykonanie
-      //Symulacja kliknięcia createRecipe() z "wprowadzonymi" wcześniej danymi
+      tick();
       component.createRecipe();
 
       expect(serviceSpy.createRecipe).toHaveBeenCalled();
-      expect(location.path()).toBe('/'); //path() sprowadza ścieżkę '' do ścieżki '/'
+      expect(location.path()).toBe('/');
     }));
   });
 });
