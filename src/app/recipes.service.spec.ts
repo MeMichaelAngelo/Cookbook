@@ -8,7 +8,7 @@ import { RecipeInterface } from './interfaces/recipe';
 import { KitchenMeasures } from './enums/kitchen-measures.enum';
 
 describe('RecipesService', () => {
-  let httpTestingController: HttpTestingController;
+  let httpMock: HttpTestingController;
   let service: RecipesService;
 
   const id = '68d5b610749bd7aa0dbeab4b';
@@ -31,12 +31,12 @@ describe('RecipesService', () => {
       providers: [RecipesService],
     });
 
-    httpTestingController = TestBed.inject(HttpTestingController);
+    httpMock = TestBed.inject(HttpTestingController);
     service = TestBed.inject(RecipesService);
   });
 
   afterEach(() => {
-    httpTestingController.verify();
+    httpMock.verify();
   });
 
   describe('Service - GET method', () => {
@@ -45,9 +45,7 @@ describe('RecipesService', () => {
         expect(data[0]).toEqual(exampleData);
       });
 
-      const req = httpTestingController.expectOne(
-        'http://localhost:3000/recipe'
-      );
+      const req = httpMock.expectOne('http://localhost:3000/recipe');
 
       expect(req.request.method).toBe('GET');
     });
@@ -59,10 +57,12 @@ describe('RecipesService', () => {
           expect(data).toEqual(exampleData);
         });
 
-      const request = httpTestingController.expectOne(
-        (r) => r.method === 'GET'
-      );
+      //expectOne - sprawdza wysłanie zapytania na konkretny adres
+      const request = httpMock.expectOne((r) => r.method === 'GET');
 
+      console.log('asdadasda', request);
+
+      //flush - symuluje odpowiedź serwera
       request.flush(exampleData);
     });
 
@@ -73,9 +73,7 @@ describe('RecipesService', () => {
           expect(data).toEqual(exampleData);
         });
 
-      const req = httpTestingController.expectOne(
-        `http://localhost:3000/recipe/${id}`
-      );
+      const req = httpMock.expectOne(`http://localhost:3000/recipe/${id}`);
 
       expect(req.request.method).toBe('GET');
       expect(req.request.url).toBe(`http://localhost:3000/recipe/${id}`);
@@ -84,18 +82,17 @@ describe('RecipesService', () => {
 
   describe('Service - POST method', () => {
     it('createRecipe - check if function pushes object and uses POST method', () => {
-      const createdRecipe: RecipeInterface = { ...exampleData };
+      const createdRecipe: RecipeInterface = { ...exampleData }; //użycie spread operatora po to, aby createdRecipe posiadało
+      // kopię exampleData, ale w odrębnej komórce pamięci
 
       service.createRecipe(exampleData).subscribe((data: RecipeInterface) => {
         expect(data).toEqual(createdRecipe);
       });
 
-      const req = httpTestingController.expectOne(
-        'http://localhost:3000/recipe'
-      );
+      const req = httpMock.expectOne('http://localhost:3000/recipe');
 
       expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual(createdRecipe);
+      expect(req.request.body).toEqual(createdRecipe); //porównanie body z tym, co wrzucamy w POST
 
       req.flush(createdRecipe);
     });
@@ -120,9 +117,7 @@ describe('RecipesService', () => {
         expect(data).toEqual(updateRecipe);
       });
 
-      const req = httpTestingController.expectOne(
-        `http://localhost:3000/recipe/${id}`
-      );
+      const req = httpMock.expectOne(`http://localhost:3000/recipe/${id}`);
 
       expect(req.request.body.name).toEqual('Updated Dinner');
       expect(req.request.body.tags[2]).toEqual('light');
@@ -137,9 +132,7 @@ describe('RecipesService', () => {
         expect(data).toEqual(id);
       });
 
-      const req = httpTestingController.expectOne(
-        `http://localhost:3000/recipe/${id}`
-      );
+      const req = httpMock.expectOne(`http://localhost:3000/recipe/${id}`);
 
       expect(req.request.method).toBe('DELETE');
 
