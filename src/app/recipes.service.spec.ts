@@ -60,8 +60,6 @@ describe('RecipesService', () => {
       //expectOne - sprawdza wysłanie zapytania na konkretny adres
       const request = httpMock.expectOne((r) => r.method === 'GET');
 
-      console.log('asdadasda', request);
-
       //flush - symuluje odpowiedź serwera
       request.flush(exampleData);
     });
