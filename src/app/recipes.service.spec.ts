@@ -57,10 +57,8 @@ describe('RecipesService', () => {
           expect(data).toEqual(exampleData);
         });
 
-      //expectOne - sprawdza wysłanie zapytania na konkretny adres
       const request = httpMock.expectOne((r) => r.method === 'GET');
 
-      //flush - symuluje odpowiedź serwera
       request.flush(exampleData);
     });
 
@@ -80,8 +78,7 @@ describe('RecipesService', () => {
 
   describe('Service - POST method', () => {
     it('createRecipe - check if function pushes object and uses POST method', () => {
-      const createdRecipe: RecipeInterface = { ...exampleData }; //użycie spread operatora po to, aby createdRecipe posiadało
-      // kopię exampleData, ale w odrębnej komórce pamięci
+      const createdRecipe: RecipeInterface = { ...exampleData };
 
       service.createRecipe(exampleData).subscribe((data: RecipeInterface) => {
         expect(data).toEqual(createdRecipe);
@@ -90,7 +87,7 @@ describe('RecipesService', () => {
       const req = httpMock.expectOne('http://localhost:3000/recipe');
 
       expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual(createdRecipe); //porównanie body z tym, co wrzucamy w POST
+      expect(req.request.body).toEqual(createdRecipe);
 
       req.flush(createdRecipe);
     });
