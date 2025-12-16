@@ -12,7 +12,6 @@ import { of } from 'rxjs';
 describe('AllRecipesComponent', () => {
   let component: AllRecipesComponent;
   let fixture: ComponentFixture<AllRecipesComponent>;
-  //let serviceSpy: jasmine.SpyObj<RecipesService>;
   let allRecipes: RecipeInterface[];
 
   beforeEach(async () => {
@@ -24,11 +23,6 @@ describe('AllRecipesComponent', () => {
       'update',
       'delete',
     ]);
-
-    //Ogarnianie serwisu
-    //1. deklaracja zmiennej z nazwą serwisu + jego metodami
-    //2. dodanie go do providers
-    //3. obsługa metod serwisowych
 
     await TestBed.configureTestingModule({
       imports: [
@@ -130,11 +124,9 @@ describe('AllRecipesComponent', () => {
       component.deleteRecipe('1');
       fixture.detectChanges();
 
-      // Remove Rosół from the list
       expect(
         component.allRecipes.find((res) => res._id === '1')
       ).toBeUndefined();
-      // Check if Grochówka left on the list
       expect(component.allRecipes.find((res) => res._id === '2')).toBeDefined();
     });
 
@@ -156,17 +148,15 @@ describe('AllRecipesComponent', () => {
     });
 
     it('searchTagOrRecipeName', () => {
-      //Check if input is empty
       component.searchText = '';
       component.searchTagOrRecipeName();
       expect(!component.searchText).toBeTrue();
 
-      //Check if input is presents results
       component.allRecipes = allRecipes;
       component.searchText = 'Woda';
       component.searchTagOrRecipeName();
       expect(component.recipesForPagination[0].name).toBe('Grochówka');
-      // //Check if there is no results
+
       component.allRecipes = allRecipes;
       component.searchText = 'xyz';
       component.searchTagOrRecipeName();
