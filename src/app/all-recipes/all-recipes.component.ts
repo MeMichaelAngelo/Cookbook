@@ -31,7 +31,7 @@ export class AllRecipesComponent implements OnInit {
   selectedRecipe!: RecipeInterface | null;
   searchText: string = '';
   searchField: RecipeInterface[] = [];
-  searchTextSubject$ = new Subject<string>(); //miał private
+  searchTextSubject$ = new Subject<string>();
   destroySubscribe$: Subject<boolean> = new Subject<boolean>();
   recipesForPagination: RecipeInterface[] = [];
   currentPage: number = 1;
@@ -98,11 +98,10 @@ export class AllRecipesComponent implements OnInit {
       .pipe(takeUntil(this.destroySubscribe$))
       .subscribe(() => {
         this.allRecipes = this.allRecipes.filter((recipe) => recipe._id !== id);
-        //Obsługa wyszukiwarki i odświeżanie listy przepisów po delete
+        this.cdr.detectChanges();
         this.searchText
           ? this.searchTagOrRecipeName()
           : this.fetchAllRecipesForPagination();
-        this.cdr.detectChanges();
       });
   }
 
